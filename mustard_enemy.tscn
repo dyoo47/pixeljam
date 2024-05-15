@@ -1,0 +1,132 @@
+[gd_scene load_steps=17 format=3 uid="uid://dpqvhtohq22jp"]
+
+[ext_resource type="Texture2D" uid="uid://b6njos14w7v1l" path="res://sprites/mustard2.png" id="1_kaow0"]
+[ext_resource type="Texture2D" uid="uid://bf8rt3jip2416" path="res://sprites/mustard1.png" id="1_r8q48"]
+[ext_resource type="Script" path="res://MustardEnemy.cs" id="1_x2hlh"]
+[ext_resource type="Material" uid="uid://d1ewfvdoqlgcd" path="res://materials/redshift.tres" id="2_mk3at"]
+[ext_resource type="Texture2D" uid="uid://btfih8ahdbfds" path="res://sprites/mustardDie.png" id="3_j4v6b"]
+[ext_resource type="Texture2D" uid="uid://kx0jq46ja2b5" path="res://sprites/ss_smoke.png" id="6_hpram"]
+[ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="7_x23qe"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_htdoe"]
+atlas = ExtResource("3_j4v6b")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m1vf1"]
+atlas = ExtResource("3_j4v6b")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3661o"]
+atlas = ExtResource("3_j4v6b")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fcinm"]
+atlas = ExtResource("3_j4v6b")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_74d7c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_htdoe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m1vf1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3661o")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_fcinm")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_kaow0")
+}],
+"loop": true,
+"name": &"hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_r8q48")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xck5l"]
+radius = 16.0
+height = 64.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gtklw"]
+particles_animation = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8mp4i"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 6
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_olkmb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.197802), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="MustardEnemy" type="Area2D" groups=["enemy"]]
+script = ExtResource("1_x2hlh")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = ExtResource("2_mk3at")
+sprite_frames = SubResource("SpriteFrames_74d7c")
+animation = &"death"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CapsuleShape2D_xck5l")
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_gtklw")
+emitting = false
+amount = 15
+lifetime = 0.5
+one_shot = true
+texture = ExtResource("6_hpram")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 32)
+gravity = Vector2(0, -10)
+anim_speed_min = 1.5
+anim_speed_max = 1.5
+
+[node name="HitParticles" type="CPUParticles2D" parent="."]
+z_index = 1
+z_as_relative = false
+material = SubResource("CanvasItemMaterial_8mp4i")
+emitting = false
+amount = 10
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+texture = ExtResource("7_x23qe")
+emission_shape = 1
+emission_sphere_radius = 10.0
+spread = 180.0
+gravity = Vector2(0, 100)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+linear_accel_min = -82.83
+linear_accel_max = -22.22
+scale_amount_curve = SubResource("Curve_olkmb")
+anim_offset_max = 1.0
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://d1ewfvdoqlgcd"]
+
+[ext_resource type="Shader" path="res://redshift.gdshader" id="1_2xasi"]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_2xasi")
+shader_parameter/red = 0.0

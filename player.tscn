@@ -1,0 +1,140 @@
+[gd_scene load_steps=17 format=3 uid="uid://cykbmtoq4jr85"]
+
+[ext_resource type="Script" path="res://Player.cs" id="1_stjst"]
+[ext_resource type="PackedScene" uid="uid://bhn67vn6dqhwv" path="res://slash.tscn" id="2_4dqpq"]
+[ext_resource type="Texture2D" uid="uid://c4lyf2uoxyttr" path="res://sprites/character.png" id="2_viobx"]
+[ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="5_0vn5f"]
+[ext_resource type="PackedScene" uid="uid://cqofo4v5fwnf1" path="res://noodle.tscn" id="5_nv1pj"]
+[ext_resource type="PackedScene" uid="uid://dqk5pixyg366e" path="res://watergun.tscn" id="6_l87x2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vfoh5"]
+atlas = ExtResource("2_viobx")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8118w"]
+atlas = ExtResource("2_viobx")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k5h6g"]
+atlas = ExtResource("2_viobx")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7js1w"]
+atlas = ExtResource("2_viobx")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6o4nr"]
+atlas = ExtResource("2_viobx")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3csp1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vfoh5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8118w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k5h6g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7js1w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6o4nr")
+}],
+"loop": true,
+"name": &"run",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gvefk"]
+radius = 6.0
+height = 20.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j57vk"]
+blend_mode = 3
+particles_animation = true
+particles_anim_h_frames = 6
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_fh6lm"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.197802), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbwqo"]
+size = Vector2(48, 20)
+
+[node name="Player" type="Area2D" node_paths=PackedStringArray("hitCollision", "hitArea", "meleeWeapon", "rangedWeapon", "particles")]
+script = ExtResource("1_stjst")
+hitCollision = NodePath("Heading/Area2D/CollisionShape2D")
+hitArea = NodePath("Heading/Area2D")
+meleeWeapon = NodePath("WeaponContainer/Noodle")
+rangedWeapon = NodePath("Heading/RangedWeaponContainer/Watergun")
+slashEffectScene = ExtResource("2_4dqpq")
+particles = NodePath("Heading/SlashSpawnPoint/CPUParticles2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_3csp1")
+animation = &"run"
+frame_progress = 0.513309
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_gvefk")
+
+[node name="WeaponContainer" type="Node2D" parent="."]
+
+[node name="Noodle" parent="WeaponContainer" instance=ExtResource("5_nv1pj")]
+position = Vector2(13, 19)
+
+[node name="Heading" type="Node2D" parent="."]
+
+[node name="SlashSpawnPoint" type="Node2D" parent="Heading"]
+position = Vector2(32, 0)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Heading/SlashSpawnPoint"]
+z_index = 1
+z_as_relative = false
+material = SubResource("CanvasItemMaterial_j57vk")
+emitting = false
+amount = 10
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+texture = ExtResource("5_0vn5f")
+emission_shape = 1
+emission_sphere_radius = 10.0
+gravity = Vector2(0, 100)
+initial_velocity_min = 100.0
+initial_velocity_max = 100.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+linear_accel_min = -82.83
+linear_accel_max = -22.22
+scale_amount_curve = SubResource("Curve_fh6lm")
+anim_offset_max = 1.0
+
+[node name="Area2D" type="Area2D" parent="Heading"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Heading/Area2D"]
+position = Vector2(24, 0)
+shape = SubResource("RectangleShape2D_tbwqo")
+disabled = true
+
+[node name="RangedWeaponContainer" type="Node2D" parent="Heading"]
+position = Vector2(19, 2)
+
+[node name="Watergun" parent="Heading/RangedWeaponContainer" instance=ExtResource("6_l87x2")]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="area_entered" from="Heading/Area2D" to="." method="OnWeaponHit"]
+[connection signal="timeout" from="Timer" to="." method="OnTimeout"]

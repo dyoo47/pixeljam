@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwp30rssu7qp4"]
+
+[ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
+[ext_resource type="PackedScene" uid="uid://bf256b055egfh" path="res://water_ball.tscn" id="3_og1c3"]
+[ext_resource type="PackedScene" uid="uid://dpqvhtohq22jp" path="res://mustard_enemy.tscn" id="3_pfkrw"]
+
+[node name="Main" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource("1_ayroo")]
+position = Vector2(284, 150)
+
+[node name="MustardEnemy" parent="." instance=ExtResource("3_pfkrw")]
+position = Vector2(447, 131)
+
+[node name="MustardEnemy2" parent="." instance=ExtResource("3_pfkrw")]
+position = Vector2(386, 108)
+
+[node name="MustardEnemy3" parent="." instance=ExtResource("3_pfkrw")]
+position = Vector2(420, 193)
+
+[node name="WaterBall" parent="." instance=ExtResource("3_og1c3")]
+position = Vector2(178, 118)
