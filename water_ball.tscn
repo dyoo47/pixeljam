@@ -5,22 +5,20 @@
 [ext_resource type="Script" path="res://Projectile.cs" id="3_4t8ou"]
 [ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="4_a1n3o"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_1tdcu"]
-noise_type = 0
-frequency = 0.0058
-fractal_type = 3
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nesqa"]
+noise_type = 2
+frequency = 0.0219
+fractal_type = 0
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bvdkv"]
-generate_mipmaps = false
-seamless = true
-noise = SubResource("FastNoiseLite_1tdcu")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_15iot"]
+noise = SubResource("FastNoiseLite_nesqa")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y8jr2"]
 shader = ExtResource("1_no0ya")
 shader_parameter/spin_direction = Vector2(0.5, 0.8)
 shader_parameter/border_color = Vector3(1, 1, 1)
 shader_parameter/water_base_color = Vector3(0.53, 0.68, 0.93)
-shader_parameter/specular = SubResource("NoiseTexture2D_bvdkv")
+shader_parameter/specular = SubResource("NoiseTexture2D_15iot")
 
 [sub_resource type="Animation" id="Animation_g2err"]
 resource_name = "moving"
@@ -101,4 +99,5 @@ anim_offset_max = 1.0
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
 shape = SubResource("CircleShape2D_ew4g7")

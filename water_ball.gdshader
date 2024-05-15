@@ -31,7 +31,7 @@ void fragment() {
 	float spec = texture(specular, new_uv).r;
 	if(COLOR.a > 0.0f){
 		//COLOR.rgb = vec3(1.0f);
-		COLOR.rgb = water_base_color;
+		COLOR.rgb = water_base_color + vec3(spec / 2.0f);
 		COLOR.a = spec;
 		//COLOR.a = texture(specular, UV).r;
 	}else if(COLOR.a == 0.0f && contrary){

@@ -45,6 +45,7 @@ public partial class Projectile : Sprite2D
 		MustardEnemy enemy = (MustardEnemy) area;
 		Vector2 pointing = (enemy.Position - Position).Normalized();
 		enemy.Hit(pointing * new Vector2(100, 100), 0.5f, 12);
+		QueueFree();
 	}
 
 	public void Knockback(Vector2 vel)

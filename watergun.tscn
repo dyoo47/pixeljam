@@ -76,6 +76,7 @@ _data = {
 }
 
 [node name="Watergun" type="AnimatedSprite2D"]
+rotation = -0.785398
 sprite_frames = SubResource("SpriteFrames_mt43n")
 frame = 5
 frame_progress = 1.0
