@@ -16,7 +16,7 @@ public partial class Projectile : Sprite2D
 		_AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 		_AnimationPlayer.Play("moving");
 		_Area = GetNode<Area2D>("Area2D");
-		_Area.AreaEntered += OnProjectileHit;
+		_Area.BodyEntered += OnProjectileHit;
 		Velocity = new Vector2(0, 0);
 	}
 
@@ -36,13 +36,13 @@ public partial class Projectile : Sprite2D
 		}
 	}
 
-	public void OnProjectileHit(Area2D area)
+	public void OnProjectileHit(Node2D body)
 	{
-		if (!area.IsInGroup("enemy"))
+		if (!body.IsInGroup("enemy"))
 		{
 			return;
 		}
-		MustardEnemy enemy = (MustardEnemy) area;
+		Entity enemy = (Entity) body;
 		Vector2 pointing = (enemy.Position - Position).Normalized();
 		enemy.Hit(pointing * new Vector2(100, 100), 0.5f, 12);
 		QueueFree();

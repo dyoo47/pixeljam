@@ -1,22 +1,47 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=9 format=3 uid="uid://dwp30rssu7qp4"]
 
+[ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
-[ext_resource type="PackedScene" uid="uid://bf256b055egfh" path="res://water_ball.tscn" id="3_og1c3"]
 [ext_resource type="PackedScene" uid="uid://dpqvhtohq22jp" path="res://mustard_enemy.tscn" id="3_pfkrw"]
+[ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://block_1.tscn" id="5_13gs2"]
+[ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
+[ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
+[ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
 
-[node name="Main" type="Node"]
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_13okj"]
+vertices = PackedVector2Array(680, 359, 27, 362, 25, 0, 668, -5)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(18, 373, 15, -9, 678, -16, 691, 369)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("PlayerScene")]
+y_sort_enabled = true
+script = ExtResource("1_2ixbe")
+PlayerScene = NodePath("Player")
 
 [node name="Player" parent="." instance=ExtResource("1_ayroo")]
-position = Vector2(284, 150)
+position = Vector2(295, 150)
 
 [node name="MustardEnemy" parent="." instance=ExtResource("3_pfkrw")]
-position = Vector2(447, 131)
+position = Vector2(386, 167)
 
-[node name="MustardEnemy2" parent="." instance=ExtResource("3_pfkrw")]
-position = Vector2(386, 108)
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+visible = false
+position = Vector2(-25, 2)
+navigation_polygon = SubResource("NavigationPolygon_13okj")
 
-[node name="MustardEnemy3" parent="." instance=ExtResource("3_pfkrw")]
-position = Vector2(420, 193)
+[node name="Block1" parent="." instance=ExtResource("5_13gs2")]
+position = Vector2(0, 360)
 
-[node name="WaterBall" parent="." instance=ExtResource("3_og1c3")]
-position = Vector2(178, 118)
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(317, 175)
+script = ExtResource("6_ayan2")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
+
+[node name="WaterFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("6_q83x5")]
+position = Vector2(604, 284)
+
+[node name="HealthFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("7_54fwy")]
+z_index = -1
+position = Vector2(548, 286)

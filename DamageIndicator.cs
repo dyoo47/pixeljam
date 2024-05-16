@@ -5,6 +5,7 @@ public partial class DamageIndicator : RichTextLabel
 {
 	float RiseDistance = 10f;
 	float RiseSpeed = 10f;
+	float InitialHeightOffset = 32f;
 	double Lifetime = 0.5;
 	double ElapsedLifetime = 0;
 	public Vector2 StartPosition;
@@ -18,7 +19,7 @@ public partial class DamageIndicator : RichTextLabel
 	{
 		float scale = pixeljam.Util.easeOutExpo(ElapsedLifetime / Lifetime);
 		float tint = pixeljam.Util.easeInOutQuad(ElapsedLifetime / Lifetime);
-		Position = StartPosition + new Vector2(0, -RiseDistance * scale);
+		Position = StartPosition + new Vector2(0, -RiseDistance * scale - InitialHeightOffset);
 		StartPosition += new Vector2(0, -RiseSpeed * (float) delta);
 		Scale = new Vector2(scale, scale);
 		ElapsedLifetime += delta;

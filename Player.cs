@@ -2,7 +2,7 @@ using Godot;
 using pixeljam;
 using System;
 
-public partial class Player : Area2D
+public partial class Player : CharacterBody2D
 {
 	[Export] public CollisionShape2D hitCollision;
 	[Export] public Area2D hitArea;
@@ -10,6 +10,7 @@ public partial class Player : Area2D
 	[Export] public RangedWeapon rangedWeapon;
 	[Export] public PackedScene slashEffectScene;
 	[Export] public CpuParticles2D particles;
+	[Export] public PackedScene damageIndicatorScene;
 	[Export] public int Speed { get; set; } = 200;
 
 
@@ -22,6 +23,11 @@ public partial class Player : Area2D
 	private Node2D _slashSpawnPoint;
 	private float _targetRotation;
 	private AnimatedSprite2D _sprite;
+	private float redshift = 0.0f;
+	private float redshiftSpeed = 2.0f;
+
+	private double hitTime = 1.0f;
+	private double elapsedHitTime = 0.0f;
 
 	private Timer _timer;
 	private Timer _attackTimer;
@@ -44,6 +50,7 @@ public partial class Player : Area2D
 	
 	public override void _Ready()
 	{
+		elapsedHitTime = hitTime;
 		ScreenSize = GetViewportRect().Size;
 		_weaponContainer = GetNode<Node2D>("WeaponContainer");
 		_heading = GetNode<Node2D>("Heading");
@@ -58,6 +65,14 @@ public partial class Player : Area2D
 
 	public override void _Process(double delta)
 	{
+		redshift = Math.Max(0, redshift - redshiftSpeed * (float) delta);
+		(_sprite.Material as ShaderMaterial).SetShaderParameter("red", redshift);
+
+		elapsedHitTime += delta;
+		float _scale = pixeljam.Util.easeOutElastic(elapsedHitTime / hitTime);
+		_sprite.Scale = new Vector2(_scale, _scale);
+
+
 		_weaponContainer.LookAt(GetGlobalMousePosition());
 		_heading.LookAt(GetGlobalMousePosition());
 		
@@ -153,54 +168,61 @@ public partial class Player : Area2D
 		}
 	
 
-		var velocity = Vector2.Zero;
+		var dir = Vector2.Zero;
 		if (Input.IsActionPressed("move_right"))
 		{
-			velocity.X += 1;
+			dir.X += 1;
 		}
 
 		if (Input.IsActionPressed("move_left"))
 		{
-			velocity.X -= 1;
+			dir.X -= 1;
 		}
 
 		if (Input.IsActionPressed("move_down"))
 		{
-			velocity.Y += 1;
+			dir.Y += 1;
 		}
 
 		if (Input.IsActionPressed("move_up"))
 		{
-			velocity.Y -= 1;
+			dir.Y -= 1;
 		}
 		
 		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-		if (velocity.Length() > 0)
+		if (dir.Length() > 0)
 		{
-			velocity = velocity.Normalized() * Speed;
+			dir = dir.Normalized() * Speed;
 			animatedSprite2D.Play();
 		}
 		else
 		{
 			animatedSprite2D.Stop();
 		}
-		
-		Position += velocity * (float)delta;
-		Position = new Vector2(
-			x: Mathf.Clamp(Position.X, 0, ScreenSize.X),
-			y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y)
-		);
+
+		Velocity = dir;
+		MoveAndSlide();
+	}
+
+	public void Hit(int damage)
+	{
+		DamageIndicator damageIndicator = damageIndicatorScene.Instantiate<DamageIndicator>();
+		damageIndicator.StartPosition = Position;
+		damageIndicator.Text = damage.ToString();
+		GetTree().Root.AddChild(damageIndicator);
+		redshift = 1.0f;
+		elapsedHitTime = 0;
 	}
 	
-	private void OnWeaponHit(Area2D area)
+	private void OnWeaponHit(Node2D body)
 	{
-		if(!area.IsInGroup("enemy"))
+		if(!body.IsInGroup("enemy"))
 		{
 			return;
 		}
-		MustardEnemy enemy = (MustardEnemy) area;
-		Vector2 pointing = (enemy.Position - Position).Normalized();
-		enemy.Hit(pointing * new Vector2(100, 100), 0.5f, 7);
+		Entity enemy = (Entity) body;
+		Vector2 pointing = (enemy.Sprite.GlobalPosition - _sprite.GlobalPosition).Normalized();
+		enemy.Hit(pointing * 200.0f, 0.5f, 7);
 	}
 	
 	private void OnTimeout()

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqoentn47pirx"]
+
+[ext_resource type="Material" uid="uid://oxv7sn465isl" path="res://materials/water_flask.tres" id="1_smhur"]
+[ext_resource type="Texture2D" uid="uid://vcuvbn2qi34x" path="res://sprites/flask.png" id="2_t7qp6"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k1an2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_t7qp6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="WaterFlask" type="AnimatedSprite2D"]
+material = ExtResource("1_smhur")
+sprite_frames = SubResource("SpriteFrames_k1an2")

@@ -1,0 +1,62 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfldxgul6eyh6"]
+
+[ext_resource type="Texture2D" uid="uid://cro4cpiom4h3n" path="res://sprites/ballMask.png" id="2_ib3cu"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_txxif"]
+script/source = "using Godot;
+using System;
+
+public partial class PathTest : CharacterBody2D
+{
+	public const float Speed = 300.0f;
+	public const float JumpVelocity = -400.0f;
+	private NavigationAgent2D Agent;
+	private Vector2 MovementTarget;
+
+	// Get the gravity from the project settings to be synced with RigidBody nodes.
+	public float gravity = ProjectSettings.GetSetting(\"physics/2d/default_gravity\").AsSingle();
+
+	public override void _Ready()
+	{
+		Agent = GetNode<NavigationAgent2D>(\"NavigationAgent2D\");
+	}
+
+
+	public override void _PhysicsProcess(double delta)
+	{
+		var next = GlobalPosition.DirectionTo(Agent.GetNextPathPosition());
+		var newVelocity = next * 100.0f;
+		Velocity = newVelocity;
+		MoveAndSlide();
+	}
+
+
+	private void _on_timer_timeout()
+	{
+		Agent.TargetPosition = new Vector2(100, 100);
+	}
+}
+
+
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y5g4v"]
+radius = 11.0454
+
+[node name="PathTest" type="CharacterBody2D"]
+motion_mode = 1
+script = SubResource("CSharpScript_txxif")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_y5g4v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ib3cu")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

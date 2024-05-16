@@ -69,7 +69,7 @@ radius = 12.0
 
 [node name="WaterBall" type="Sprite2D"]
 material = SubResource("ShaderMaterial_y8jr2")
-rotation = 3.14159
+skew = 0.523599
 texture = ExtResource("1_jbf6g")
 script = ExtResource("3_4t8ou")
 
@@ -97,6 +97,8 @@ scale_amount_curve = SubResource("Curve_chiyg")
 anim_offset_max = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 visible = false

@@ -1,8 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://cykbmtoq4jr85"]
+[gd_scene load_steps=19 format=3 uid="uid://cykbmtoq4jr85"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_stjst"]
 [ext_resource type="PackedScene" uid="uid://bhn67vn6dqhwv" path="res://slash.tscn" id="2_4dqpq"]
 [ext_resource type="Texture2D" uid="uid://c4lyf2uoxyttr" path="res://sprites/character.png" id="2_viobx"]
+[ext_resource type="PackedScene" uid="uid://b6kpw3pll0cks" path="res://damage_indicator.tscn" id="3_4fipu"]
+[ext_resource type="Material" uid="uid://d1ewfvdoqlgcd" path="res://materials/redshift.tres" id="4_bcxmi"]
 [ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="5_0vn5f"]
 [ext_resource type="PackedScene" uid="uid://cqofo4v5fwnf1" path="res://noodle.tscn" id="5_nv1pj"]
 [ext_resource type="PackedScene" uid="uid://dqk5pixyg366e" path="res://watergun.tscn" id="6_l87x2"]
@@ -68,7 +70,9 @@ point_count = 2
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tbwqo"]
 size = Vector2(48, 20)
 
-[node name="Player" type="Area2D" node_paths=PackedStringArray("hitCollision", "hitArea", "meleeWeapon", "rangedWeapon", "particles")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("hitCollision", "hitArea", "meleeWeapon", "rangedWeapon", "particles") groups=["player"]]
+collision_layer = 2
+motion_mode = 1
 script = ExtResource("1_stjst")
 hitCollision = NodePath("Heading/Area2D/CollisionShape2D")
 hitArea = NodePath("Heading/Area2D")
@@ -76,21 +80,28 @@ meleeWeapon = NodePath("WeaponContainer/Noodle")
 rangedWeapon = NodePath("Heading/RangedWeaponContainer/Watergun")
 slashEffectScene = ExtResource("2_4dqpq")
 particles = NodePath("Heading/SlashSpawnPoint/CPUParticles2D")
+damageIndicatorScene = ExtResource("3_4fipu")
+Speed = 150
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = ExtResource("4_bcxmi")
+position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_3csp1")
 animation = &"run"
 frame_progress = 0.513309
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -12)
 shape = SubResource("CapsuleShape2D_gvefk")
 
 [node name="WeaponContainer" type="Node2D" parent="."]
+position = Vector2(0, -12)
 
 [node name="Noodle" parent="WeaponContainer" instance=ExtResource("5_nv1pj")]
 position = Vector2(13, 19)
 
 [node name="Heading" type="Node2D" parent="."]
+position = Vector2(0, -12)
 
 [node name="SlashSpawnPoint" type="Node2D" parent="Heading"]
 position = Vector2(32, 0)
@@ -118,6 +129,8 @@ scale_amount_curve = SubResource("Curve_fh6lm")
 anim_offset_max = 1.0
 
 [node name="Area2D" type="Area2D" parent="Heading"]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Heading/Area2D"]
 position = Vector2(24, 0)
@@ -136,5 +149,5 @@ one_shot = true
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
 
-[connection signal="area_entered" from="Heading/Area2D" to="." method="OnWeaponHit"]
+[connection signal="body_entered" from="Heading/Area2D" to="." method="OnWeaponHit"]
 [connection signal="timeout" from="Timer" to="." method="OnTimeout"]

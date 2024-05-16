@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://ju46tbyq1yj5"]
+
+[ext_resource type="Texture2D" uid="uid://cajtyqyr42bv3" path="res://sprites/healthFlask.png" id="1_cfatb"]
+[ext_resource type="Material" uid="uid://dk5simn707kh0" path="res://materials/health_flask.tres" id="1_wksgs"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jcada"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_cfatb")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="HealthFlask" type="AnimatedSprite2D"]
+material = ExtResource("1_wksgs")
+sprite_frames = SubResource("SpriteFrames_jcada")

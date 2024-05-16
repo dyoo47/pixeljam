@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dk5simn707kh0"]
+
+[ext_resource type="Shader" path="res://flask.gdshader" id="1_vpuvv"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_478ro"]
+noise_type = 2
+seed = 2
+frequency = 0.0107
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gb08o"]
+seamless = true
+seamless_blend_skirt = 0.228
+noise = SubResource("FastNoiseLite_478ro")
+
+[resource]
+shader = ExtResource("1_vpuvv")
+shader_parameter/water_color = Vector3(1, 0.2, 0.2)
+shader_parameter/px_height = 64.0
+shader_parameter/border_height = 6.0
+shader_parameter/height_coef = 10.0
+shader_parameter/water_height = SubResource("NoiseTexture2D_gb08o")
