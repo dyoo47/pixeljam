@@ -1,0 +1,78 @@
+[gd_scene load_steps=10 format=3 uid="uid://bb8rvwon3sx41"]
+
+[ext_resource type="Texture2D" uid="uid://dbs8phm2v5omb" path="res://sprites/cannonBall.png" id="1_pt6y5"]
+[ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="2_0lv5p"]
+[ext_resource type="Script" path="res://CannonBallProjectile.cs" id="2_fjnfv"]
+[ext_resource type="Curve" uid="uid://db2m7cwtuof80" path="res://misc/mote_curve.tres" id="3_62pny"]
+[ext_resource type="PackedScene" uid="uid://dfcucxukdxkv6" path="res://plume.tscn" id="3_wu8hx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f2sym"]
+radius = 18.0278
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_r3agx"]
+particles_animation = true
+particles_anim_h_frames = 6
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Animation" id="Animation_p0f0o"]
+resource_name = "moving"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vxq6p"]
+_data = {
+"moving": SubResource("Animation_p0f0o")
+}
+
+[node name="CannonBall" type="Sprite2D"]
+scale = Vector2(1.18337, 1.18337)
+texture = ExtResource("1_pt6y5")
+script = ExtResource("2_fjnfv")
+fxScene = ExtResource("3_wu8hx")
+TargetGroup = "player"
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
+shape = SubResource("CircleShape2D_f2sym")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 1
+material = SubResource("CanvasItemMaterial_r3agx")
+position = Vector2(-16, 0)
+amount = 20
+texture = ExtResource("2_0lv5p")
+emission_shape = 1
+emission_sphere_radius = 10.0
+direction = Vector2(-1, 0)
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+linear_accel_min = -82.83
+linear_accel_max = -22.22
+scale_amount_max = 2.0
+scale_amount_curve = ExtResource("3_62pny")
+color = Color(0.133333, 0.12549, 0.203922, 1)
+anim_offset_max = 1.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vxq6p")
+}

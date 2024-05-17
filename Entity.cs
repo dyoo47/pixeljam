@@ -5,10 +5,11 @@ public partial class Entity : CharacterBody2D
 {
 	[Export] public bool UseNavigation = true;
 	protected NavigationAgent2D Agent;
-	protected float MoveSpeed = 100.0f;
+	[Export] public float MoveSpeed = 100.0f;
 	private float Damping = 0.005f;
 	private float Epsilon = 0.0001f;
 	public AnimatedSprite2D Sprite;
+	public Node2D SpriteContainer;
 	private float _RedShift = 0f;
 	private float _RedShiftSpeed = 2.0f;
 	protected EntityState State;
@@ -23,13 +24,14 @@ public partial class Entity : CharacterBody2D
 	private CpuParticles2D _DeathParticles;
 	private CpuParticles2D _HitParticles;
 
-	public int Health = 21;
+	[Export] public int Health = 21;
 
 	protected enum EntityState
 	{
 		Idle,
 		Hurt,
 		Attacking,
+		Aiming,
 		Dying,
 		Dead
 	}
@@ -42,11 +44,12 @@ public partial class Entity : CharacterBody2D
 			Agent = GetNode<NavigationAgent2D>("NavigationAgent2D");
 			Agent.TargetPosition = new Vector2(0, 0);
 		}
+		SpriteContainer = GetNode<Node2D>("SpriteContainer");
 		HurtBoxAnim = GetNode<AnimationPlayer>("AnimationPlayer");
 		_ElapsedStunTime = _StunTime;
 		_DamageIndicatorScene = ResourceLoader.Load<PackedScene>("res://damage_indicator.tscn");
 		Velocity = new Vector2 (0, 0);
-		Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		Sprite = GetNode<Node2D>("SpriteContainer").GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		Sprite.AnimationFinished += OnAnimationFinished;
 		_DeathParticles = GetNode<CpuParticles2D>("DeathParticles");
 		_DeathParticles.Finished += OnParticlesFinished;
@@ -62,7 +65,7 @@ public partial class Entity : CharacterBody2D
 
 
 		_ElapsedStunTime += delta;
-		Sprite.Scale = new Vector2(ScaleCoef, pixeljam.Util.easeOutElastic(_ElapsedStunTime / _StunTime));
+		SpriteContainer.Scale = new Vector2(ScaleCoef, pixeljam.Util.easeOutElastic(_ElapsedStunTime / _StunTime));
 		switch(State)
 		{
 			case EntityState.Idle: 
@@ -137,9 +140,9 @@ public partial class Entity : CharacterBody2D
 		_StunTime = stunTime;
 		_ElapsedStunTime = 0;
 		DamageIndicator damageIndicator = _DamageIndicatorScene.Instantiate<DamageIndicator>();
-		damageIndicator.StartPosition = Position;
+		damageIndicator.StartPosition = GlobalPosition;
 		damageIndicator.Text = damage.ToString();
-		GetTree().Root.AddChild(damageIndicator);
+		Game.MainNode.AddChild(damageIndicator);
 		_HitParticles.Restart();
 	}
 

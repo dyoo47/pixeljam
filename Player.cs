@@ -12,6 +12,8 @@ public partial class Player : CharacterBody2D
 	[Export] public CpuParticles2D particles;
 	[Export] public PackedScene damageIndicatorScene;
 	[Export] public int Speed { get; set; } = 200;
+	public int MaxHealth = 50;
+	public int Health = 50;
 
 
 	public float weaponRotationOffset = 1.2f;
@@ -210,6 +212,7 @@ public partial class Player : CharacterBody2D
 		damageIndicator.StartPosition = Position;
 		damageIndicator.Text = damage.ToString();
 		GetTree().Root.AddChild(damageIndicator);
+		Health -= damage;
 		redshift = 1.0f;
 		elapsedHitTime = 0;
 	}

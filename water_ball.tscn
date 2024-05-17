@@ -4,6 +4,7 @@
 [ext_resource type="Shader" path="res://water_ball.gdshader" id="1_no0ya"]
 [ext_resource type="Script" path="res://Projectile.cs" id="3_4t8ou"]
 [ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="4_a1n3o"]
+[ext_resource type="Curve" uid="uid://db2m7cwtuof80" path="res://misc/mote_curve.tres" id="5_wgctj"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_nesqa"]
 noise_type = 2
@@ -60,10 +61,6 @@ particles_anim_h_frames = 6
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[sub_resource type="Curve" id="Curve_chiyg"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.197802), 0.0, 0.0, 0, 0]
-point_count = 2
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_ew4g7"]
 radius = 12.0
 
@@ -72,6 +69,7 @@ material = SubResource("ShaderMaterial_y8jr2")
 skew = 0.523599
 texture = ExtResource("1_jbf6g")
 script = ExtResource("3_4t8ou")
+Damage = 12
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -86,6 +84,7 @@ lifetime = 0.5
 texture = ExtResource("4_a1n3o")
 emission_shape = 1
 emission_sphere_radius = 10.0
+direction = Vector2(-1, 0)
 gravity = Vector2(0, 100)
 initial_velocity_min = 100.0
 initial_velocity_max = 100.0
@@ -93,7 +92,7 @@ angular_velocity_min = -180.0
 angular_velocity_max = 180.0
 linear_accel_min = -82.83
 linear_accel_max = -22.22
-scale_amount_curve = SubResource("Curve_chiyg")
+scale_amount_curve = ExtResource("5_wgctj")
 anim_offset_max = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]

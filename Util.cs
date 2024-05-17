@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,16 @@ namespace pixeljam
         public static float easeInOutQuad(double x)
         {
             return (float)(x < 0.5 ? 2 * x * x : 1 - Math.Pow(-2 * x + 2, 2) / 2);
+        }
+
+        public static float easeInSin(double x)
+        {
+            return (float)(1 - Math.Cos((x * Math.PI) / 2.0f));
+        }
+
+        public static float lerp(double a, double b, float t)
+        {
+            return (float)(a + (b - a) * t);
         }
     }
 }

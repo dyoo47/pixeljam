@@ -4,6 +4,8 @@ using System;
 public partial class Projectile : Sprite2D
 {
 	[Export] public float StartVelocity = 50.0f;
+	[Export] public string TargetGroup = "enemy";
+	[Export] public int Damage = 16;
 	private AnimationPlayer _AnimationPlayer;
 	public Vector2 Velocity;
 	private float Damping = 1.0f;
@@ -34,18 +36,35 @@ public partial class Projectile : Sprite2D
 		{
 			Velocity.Y = 0;
 		}
+		LookAt(Velocity + Position);
 	}
 
 	public void OnProjectileHit(Node2D body)
 	{
-		if (!body.IsInGroup("enemy"))
+		if (!body.IsInGroup(TargetGroup))
 		{
 			return;
 		}
-		Entity enemy = (Entity) body;
-		Vector2 pointing = (enemy.Position - Position).Normalized();
-		enemy.Hit(pointing * new Vector2(100, 100), 0.5f, 12);
+		if(TargetGroup == "player")
+		{
+			Player player = (Player)body;
+			player.Hit(Damage);
+			OnTargetHit(body);
+		}
+		else if(TargetGroup == "enemy")
+		{
+			Entity enemy = (Entity) body;
+			Vector2 pointing = (enemy.Position - Position).Normalized();
+			enemy.Hit(pointing * new Vector2(100, 100), 0.5f, Damage);
+			OnTargetHit(body);
+		}
+		
 		QueueFree();
+	}
+
+	public virtual void OnTargetHit(Node2D body)
+	{
+
 	}
 
 	public void Knockback(Vector2 vel)
