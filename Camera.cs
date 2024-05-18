@@ -4,8 +4,6 @@ using System;
 
 public partial class Camera : Camera2D
 {
-	private int roundX = 640;
-	private int roundY = 368;
 	private Vector2 prevPos;
 	private Vector2 fromPos;
 	private Vector2 diff;
@@ -19,7 +17,6 @@ public partial class Camera : Camera2D
 		viewWidth = (int)ProjectSettings.GetSetting("display/window/size/viewport_width");
 		viewHeight = (int)ProjectSettings.GetSetting("display/window/size/viewport_height");
 		prevPos = Position;
-		GD.Print(viewWidth, viewHeight);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -27,7 +24,7 @@ public partial class Camera : Camera2D
 	{
 		elapsedMoveTime += delta;
 		var pos = Game.MainPlayer.Position + new Vector2(0, -16.0f);
-		Vector2 targetPos = new Vector2(pos.X - pos.X % roundX + viewWidth / 2, pos.Y - pos.Y % roundY + viewHeight / 2);
+		Vector2 targetPos = new Vector2(pos.X - pos.X % Constants.ROUND_X + viewWidth / 2, pos.Y - pos.Y % Constants.ROUND_Y + viewHeight / 2);
 		if(prevPos != targetPos)
 		{
 			fromPos = prevPos;

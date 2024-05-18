@@ -1,13 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=9 format=3 uid="uid://dwp30rssu7qp4"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
-[ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://block_1.tscn" id="5_13gs2"]
+[ext_resource type="PackedScene" uid="uid://ym1lowlk35io" path="res://blocks/block_big.tscn" id="3_upfys"]
+[ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://blocks/block_simple.tscn" id="5_13gs2"]
 [ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
 [ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
 [ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
-[ext_resource type="PackedScene" uid="uid://m8wqi37517sh" path="res://misc/cannon_enemy.tscn" id="8_bj3fg"]
-[ext_resource type="PackedScene" uid="uid://bmqvccjqiyx5a" path="res://beach_ball_enemy.tscn" id="8_uls3y"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_13okj"]
 vertices = PackedVector2Array(680, 359, 27, 362, 25, 0, 668, -5)
@@ -21,21 +20,15 @@ script = ExtResource("1_2ixbe")
 PlayerScene = NodePath("Player")
 HealthFlask = NodePath("Camera2D/CanvasLayer/HealthFlask")
 WaterFlask = NodePath("Camera2D/CanvasLayer/WaterFlask")
-
-[node name="BeachBallEnemy3" parent="." instance=ExtResource("8_uls3y")]
-position = Vector2(526, 134)
-scale = Vector2(1, 1.04132)
+BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2")])
 
 [node name="Player" parent="." instance=ExtResource("1_ayroo")]
-position = Vector2(295, 150)
+position = Vector2(292, 396)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 visible = false
 position = Vector2(-25, 2)
 navigation_polygon = SubResource("NavigationPolygon_13okj")
-
-[node name="Block1" parent="." instance=ExtResource("5_13gs2")]
-position = Vector2(0, 360)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(317, 175)
@@ -49,13 +42,3 @@ position = Vector2(604, 284)
 [node name="HealthFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("7_54fwy")]
 z_index = -1
 position = Vector2(548, 286)
-
-[node name="BeachBallEnemy" parent="." instance=ExtResource("8_uls3y")]
-position = Vector2(133, 167)
-
-[node name="BeachBallEnemy2" parent="." instance=ExtResource("8_uls3y")]
-position = Vector2(365, 271)
-
-[node name="CannonEnemy" parent="." instance=ExtResource("8_bj3fg")]
-position = Vector2(273, 81)
-scale = Vector2(1, 1.14545)

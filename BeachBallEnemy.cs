@@ -82,6 +82,7 @@ public partial class BeachBallEnemy : Entity
 			Node2D explosion = ExplosionScene.Instantiate<Node2D>();
 			explosion.Position = GlobalPosition;
 			Game.MainNode.AddChild(explosion);
+			(GetTree().GetFirstNodeInGroup("block_manager") as BlockManager).OnEnemyDeath();
 			QueueFree();
 		}else if(Sprite.Animation == "death")
 		{

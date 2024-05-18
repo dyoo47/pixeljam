@@ -383,7 +383,7 @@ material = ExtResource("3_kf57b")
 position = Vector2(0, -30)
 rotation = 6.28319
 sprite_frames = SubResource("SpriteFrames_bkccd")
-animation = &"idle"
+animation = &"hit"
 
 [node name="ProjectileSpawn" type="Node2D" parent="SpriteContainer/AnimatedSprite2D"]
 position = Vector2(32.7103, -0.000146866)

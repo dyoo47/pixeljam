@@ -6,6 +6,7 @@ public partial class Entity : CharacterBody2D
 	[Export] public bool UseNavigation = true;
 	protected NavigationAgent2D Agent;
 	[Export] public float MoveSpeed = 100.0f;
+	[Export] public bool IsEnemy = true;
 	private float Damping = 0.005f;
 	private float Epsilon = 0.0001f;
 	public AnimatedSprite2D Sprite;
@@ -121,6 +122,7 @@ public partial class Entity : CharacterBody2D
 	{
 		if(Sprite.Animation == "death")
 		{
+			(GetTree().GetFirstNodeInGroup("block_manager") as BlockManager).OnEnemyDeath();
 			State = EntityState.Dead;
 			Sprite.Visible = false;
 			_DeathParticles.Restart();
