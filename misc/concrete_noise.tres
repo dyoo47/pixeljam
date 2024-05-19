@@ -1,0 +1,8 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://7wumxsl0kik5"]
+
+[ext_resource type="FastNoiseLite" uid="uid://bt8k5icwnsuht" path="res://misc/grass_noise.tres" id="1_xxasa"]
+
+[resource]
+seamless = true
+seamless_blend_skirt = 0.577
+noise = ExtResource("1_xxasa")

@@ -8,7 +8,7 @@ public partial class Projectile : Sprite2D
 	[Export] public int Damage = 16;
 	private AnimationPlayer _AnimationPlayer;
 	public Vector2 Velocity;
-	private float Damping = 1.0f;
+	[Export] public float Acceleration = 1.0f;
 	private float Epsilon = 0.0001f;
 	private Area2D _Area;
 
@@ -26,12 +26,14 @@ public partial class Projectile : Sprite2D
 	public override void _Process(double delta)
 	{
 		Position += Velocity * (float)delta;
-		Velocity.X = Velocity.X * (float)Math.Pow(Damping, delta);
+		Velocity.X *= (float) Math.Pow(Acceleration, delta);
+		//Velocity.X = Velocity.X * (float)Math.Pow(Acceleration, delta);
 		if (Math.Abs(Velocity.X) < Epsilon)
 		{
 			Velocity.X = 0;
 		}
-		Velocity.Y = Velocity.Y * (float)Math.Pow(Damping, delta);
+		Velocity.Y *= (float) Math.Pow(Acceleration, delta);
+		//Velocity.Y = Velocity.Y * (float)Math.Pow(Acceleration, delta);
 		if (Math.Abs(Velocity.Y) < Epsilon)
 		{
 			Velocity.Y = 0;

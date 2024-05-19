@@ -1,0 +1,50 @@
+[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://b4sgjxk0ngu7l"]
+
+[ext_resource type="Shader" path="res://blocks/pool_water.gdshader" id="1_od5fx"]
+[ext_resource type="Texture2D" uid="uid://7wumxsl0kik5" path="res://misc/concrete_noise.tres" id="2_yqu1b"]
+[ext_resource type="Texture2D" uid="uid://dg2o2lyp2p5ra" path="res://misc/grass_shared_noise.tres" id="3_du7bj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hdqv8"]
+frequency = 0.0201
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xek1x"]
+seamless = true
+noise = SubResource("FastNoiseLite_hdqv8")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rbrug"]
+noise_type = 2
+frequency = 0.0517
+fractal_type = 0
+fractal_octaves = 6
+fractal_gain = 1.0
+fractal_weighted_strength = 1.0
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 15.23
+domain_warp_fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3e4gi"]
+generate_mipmaps = false
+seamless = true
+noise = SubResource("FastNoiseLite_rbrug")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0r1pp"]
+noise_type = 3
+frequency = 0.051
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j1t6l"]
+seamless = true
+noise = SubResource("FastNoiseLite_0r1pp")
+
+[resource]
+shader = ExtResource("1_od5fx")
+shader_parameter/water_color = Vector3(0.388, 0.608, 1)
+shader_parameter/concrete_color = Vector3(0.843, 0.827, 0.816)
+shader_parameter/grass_color = Vector3(0.216, 0.58, 0.431)
+shader_parameter/node_size = Vector2(512, 512)
+shader_parameter/noise = SubResource("NoiseTexture2D_3e4gi")
+shader_parameter/specular = SubResource("NoiseTexture2D_j1t6l")
+shader_parameter/diffuse = SubResource("NoiseTexture2D_xek1x")
+shader_parameter/concrete_noise = ExtResource("2_yqu1b")
+shader_parameter/grass_noise = ExtResource("3_du7bj")

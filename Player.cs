@@ -6,15 +6,25 @@ public partial class Player : CharacterBody2D
 {
 	[Export] public CollisionShape2D hitCollision;
 	[Export] public Area2D hitArea;
+	[Export] public Area2D refillArea;
 	[Export] public Weapon meleeWeapon;
 	[Export] public RangedWeapon rangedWeapon;
 	[Export] public PackedScene slashEffectScene;
 	[Export] public CpuParticles2D particles;
 	[Export] public PackedScene damageIndicatorScene;
+	[Export] public CpuParticles2D refillParticles;
+	[Export] public PackedScene BombScene;
 	[Export] public int Speed { get; set; } = 200;
+
 	public int MaxHealth = 50;
 	public int Health = 50;
+	public float MaxWater = 50;
+	public float Water = 50;
 
+	public int[] ConsumableCounts = new int[10];
+
+	private bool _refilling = false;
+	public float refillRate = 50;
 
 	public float weaponRotationOffset = 1.2f;
 	public Vector2 ScreenSize;
@@ -52,6 +62,10 @@ public partial class Player : CharacterBody2D
 	
 	public override void _Ready()
 	{
+		ConsumableCounts[0] = 4;
+		ConsumableCounts[1] = 60;
+		ConsumableCounts[2] = 60;
+		ConsumableCounts[3] = 0;
 		elapsedHitTime = hitTime;
 		ScreenSize = GetViewportRect().Size;
 		_weaponContainer = GetNode<Node2D>("WeaponContainer");
@@ -67,6 +81,21 @@ public partial class Player : CharacterBody2D
 
 	public override void _Process(double delta)
 	{
+		_refilling = false;
+		foreach(Area2D area in refillArea.GetOverlappingAreas()){
+			if (area.IsInGroup("refill"))
+			{
+				_refilling = true;
+				break;
+			}
+		}
+		refillParticles.Emitting = _refilling;
+		if (_refilling)
+		{
+			Water += refillRate * (float) delta;
+			if(Water > MaxWater) Water = MaxWater;
+		}
+
 		redshift = Math.Max(0, redshift - redshiftSpeed * (float) delta);
 		(_sprite.Material as ShaderMaterial).SetShaderParameter("red", redshift);
 
@@ -156,7 +185,11 @@ public partial class Player : CharacterBody2D
 					}
 					else
 					{
-						rangedWeapon.Attack();
+						if(Water >= rangedWeapon.waterCost)
+						{
+							Water -= rangedWeapon.waterCost;
+							rangedWeapon.Attack();
+						}
 					}
 				}
 				break;
@@ -202,6 +235,10 @@ public partial class Player : CharacterBody2D
 			animatedSprite2D.Stop();
 		}
 
+		if (Input.IsActionJustPressed("use_1")) UseConsumable(0);
+		if (Input.IsActionJustPressed("use_2")) UseConsumable(1);
+		if (Input.IsActionJustPressed("use_3")) UseConsumable(2);
+
 		Velocity = dir;
 		MoveAndSlide();
 	}
@@ -227,9 +264,48 @@ public partial class Player : CharacterBody2D
 		Vector2 pointing = (enemy.Sprite.GlobalPosition - _sprite.GlobalPosition).Normalized();
 		enemy.Hit(pointing * 200.0f, 0.5f, 7);
 	}
-	
-	private void OnTimeout()
+
+	private void UseConsumable(int index)
 	{
-		// Replace with function body.
+		ConsumableIcon icon = Game.MainNode.ConsumableIcons[index];
+		icon.Wiggle();
+		if (ConsumableCounts[index] == 0)
+		{
+			icon.RedShift();
+		}
+		else
+		{
+			ConsumableCounts[index]--;
+			icon.Use();
+		}
+	}
+
+	public void AddHealth(int health)
+	{
+		Health += health;
+		if(Health > MaxHealth)
+		{
+			Health = MaxHealth;
+		}
+	}
+
+	public void AddWater(int water)
+	{
+		Water += water;
+		if(Water > MaxWater) { 
+			Water = MaxWater;
+		}
+	}
+
+
+	public void ThrowBomb()
+	{
+		Projectile projInstance = BombScene.Instantiate<Projectile>();
+		projInstance.Position = GlobalPosition;
+		projInstance.Rotation = Rotation;
+		GetTree().Root.AddChild(projInstance);
+		Vector2 direction = (GetGlobalMousePosition() - GlobalPosition).Normalized();
+		projInstance.Knockback(direction * 200);
 	}
 }
+

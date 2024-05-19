@@ -1,13 +1,19 @@
-[gd_scene load_steps=19 format=3 uid="uid://cykbmtoq4jr85"]
+[gd_scene load_steps=23 format=3 uid="uid://cykbmtoq4jr85"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_stjst"]
 [ext_resource type="PackedScene" uid="uid://bhn67vn6dqhwv" path="res://slash.tscn" id="2_4dqpq"]
 [ext_resource type="Texture2D" uid="uid://c4lyf2uoxyttr" path="res://sprites/character.png" id="2_viobx"]
 [ext_resource type="PackedScene" uid="uid://b6kpw3pll0cks" path="res://damage_indicator.tscn" id="3_4fipu"]
+[ext_resource type="PackedScene" uid="uid://b72bxpyyuo8aw" path="res://bomb_projectile.tscn" id="4_2ionv"]
 [ext_resource type="Material" uid="uid://d1ewfvdoqlgcd" path="res://materials/redshift.tres" id="4_bcxmi"]
 [ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="5_0vn5f"]
 [ext_resource type="PackedScene" uid="uid://cqofo4v5fwnf1" path="res://noodle.tscn" id="5_nv1pj"]
 [ext_resource type="PackedScene" uid="uid://dqk5pixyg366e" path="res://watergun.tscn" id="6_l87x2"]
+[ext_resource type="Texture2D" uid="uid://c7vbhgl26r7sc" path="res://sprites/refillParticle.png" id="9_j0ebj"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gvefk"]
+radius = 6.0
+height = 20.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vfoh5"]
 atlas = ExtResource("2_viobx")
@@ -52,10 +58,6 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gvefk"]
-radius = 6.0
-height = 20.0
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j57vk"]
 blend_mode = 3
 particles_animation = true
@@ -70,18 +72,33 @@ point_count = 2
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tbwqo"]
 size = Vector2(48, 20)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("hitCollision", "hitArea", "meleeWeapon", "rangedWeapon", "particles") groups=["player"]]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_11rad"]
+
+[sub_resource type="Curve" id="Curve_qwtgs"]
+_data = [Vector2(0, 0.293848), 0.0, 0.0, 0, 0, Vector2(0.588235, 0.982984), 0.0, 0.0, 0, 0, Vector2(0.993464, 0.617147), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("hitCollision", "hitArea", "refillArea", "meleeWeapon", "rangedWeapon", "particles", "refillParticles") groups=["player"]]
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_stjst")
 hitCollision = NodePath("Heading/Area2D/CollisionShape2D")
 hitArea = NodePath("Heading/Area2D")
+refillArea = NodePath("RefillArea")
 meleeWeapon = NodePath("WeaponContainer/Noodle")
 rangedWeapon = NodePath("Heading/RangedWeaponContainer/Watergun")
 slashEffectScene = ExtResource("2_4dqpq")
 particles = NodePath("Heading/SlashSpawnPoint/CPUParticles2D")
 damageIndicatorScene = ExtResource("3_4fipu")
+refillParticles = NodePath("RefillParticles")
+BombScene = ExtResource("4_2ionv")
 Speed = 150
+
+[node name="RefillArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RefillArea"]
+position = Vector2(0, -12)
+shape = SubResource("CapsuleShape2D_gvefk")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = ExtResource("4_bcxmi")
@@ -149,5 +166,23 @@ one_shot = true
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="RefillParticles" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_11rad")
+position = Vector2(0, -12)
+emitting = false
+amount = 6
+lifetime = 0.6
+texture = ExtResource("9_j0ebj")
+emission_shape = 1
+emission_sphere_radius = 14.35
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 40)
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+scale_amount_curve = SubResource("Curve_qwtgs")
+
+[connection signal="area_entered" from="RefillArea" to="." method="OnRefillAreaEnter"]
+[connection signal="area_exited" from="RefillArea" to="." method="OnRefillAreaLeave"]
 [connection signal="body_entered" from="Heading/Area2D" to="." method="OnWeaponHit"]
 [connection signal="timeout" from="Timer" to="." method="OnTimeout"]

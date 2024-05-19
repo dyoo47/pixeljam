@@ -1,0 +1,21 @@
+[gd_scene load_steps=6 format=3 uid="uid://dt8evqj6h85sc"]
+
+[ext_resource type="Shader" path="res://materials/grass_particle.gdshader" id="1_wgkkx"]
+[ext_resource type="Texture2D" uid="uid://7dqq7ikyvmjj" path="res://sprites/grassMask.png" id="1_xqap0"]
+[ext_resource type="Texture2D" uid="uid://dg2o2lyp2p5ra" path="res://misc/grass_shared_noise.tres" id="2_4megw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aig80"]
+shader = ExtResource("1_wgkkx")
+shader_parameter/grass_color = Vector3(0.216, 0.58, 0.431)
+shader_parameter/node_size = Vector2(512, 512)
+shader_parameter/grass_noise = ExtResource("2_4megw")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gvj18"]
+atlas = ExtResource("1_xqap0")
+region = Rect2(0, 0, 16, 16)
+
+[node name="GrassParticleInstance" type="Sprite2D"]
+material = SubResource("ShaderMaterial_aig80")
+scale = Vector2(0.5, 0.5)
+texture = SubResource("AtlasTexture_gvj18")
+offset = Vector2(0, -6)

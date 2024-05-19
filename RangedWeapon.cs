@@ -8,6 +8,7 @@ public partial class RangedWeapon : Weapon
 	[Export] public float ProjectileSpeed = 250.0f;
 	private AnimationPlayer _AnimationPlayer;
 	private Node2D _ProjectileSpawnPoint;
+	public int waterCost = 10;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

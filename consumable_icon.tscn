@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://cr1i16ryf8scp"]
+
+[ext_resource type="Material" uid="uid://d1ewfvdoqlgcd" path="res://materials/redshift.tres" id="1_050x2"]
+[ext_resource type="Texture2D" uid="uid://d1tjm7im3pu7w" path="res://sprites/potion.png" id="1_pakys"]
+[ext_resource type="Shader" path="res://damage_indicator.gdshader" id="2_3nyof"]
+[ext_resource type="Script" path="res://ConsumableIcon.cs" id="2_y73qs"]
+[ext_resource type="FontFile" uid="uid://c3hqdjttqiakb" path="res://external/Fibberish v1.0/fibberish.ttf" id="3_434vj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4pls7"]
+shader = ExtResource("2_3nyof")
+shader_parameter/borderColor = Vector3(0, 0, 0)
+shader_parameter/startColor = Vector3(1, 1, 1)
+shader_parameter/endColor = Vector3(0.2, 0, 0)
+shader_parameter/tint = 0.0
+
+[sub_resource type="Animation" id="Animation_300pa"]
+resource_name = "wiggle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.5),
+"transitions": PackedFloat32Array(0.0883884, 0.392293, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.5, 1.5), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dwflw"]
+_data = {
+"wiggle": SubResource("Animation_300pa")
+}
+
+[node name="ConsumableIcon" type="Sprite2D"]
+z_index = -1
+material = ExtResource("1_050x2")
+texture = ExtResource("1_pakys")
+script = ExtResource("2_y73qs")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+material = SubResource("ShaderMaterial_4pls7")
+offset_left = 16.0
+offset_right = 40.0
+offset_bottom = 16.0
+theme_override_fonts/normal_font = ExtResource("3_434vj")
+text = "1"
+metadata/_edit_use_anchors_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_dwflw")
+}

@@ -1,5 +1,7 @@
 shader_type canvas_item;
 uniform vec3 borderColor = vec3(0.0f);
+uniform vec3 startColor = vec3(1.0f, 1.0f, 0.0f);
+uniform vec3 endColor = vec3(0.2f, 0.0f, 0.0f);
 uniform float tint = 0.0f;
 
 void vertex() {
@@ -8,8 +10,6 @@ void vertex() {
 
 void fragment() {
 	COLOR = texture(TEXTURE, UV);
-	vec3 startColor = vec3(1.0f, 1.0f, 0.0f);
-	vec3 endColor = vec3(0.2f, 0.0f, 0.0f);
 	vec3 diff = startColor - endColor;
 	bool contrary = 
 		texture(TEXTURE, UV + vec2(TEXTURE_PIXEL_SIZE.x, 0.0f)).a > 0.0f ||

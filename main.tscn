@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=16 format=3 uid="uid://dwp30rssu7qp4"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
@@ -7,6 +7,10 @@
 [ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
 [ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
 [ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
+[ext_resource type="PackedScene" uid="uid://cr1i16ryf8scp" path="res://consumable_icon.tscn" id="8_boa0h"]
+[ext_resource type="Shader" path="res://redshift.gdshader" id="9_30h0y"]
+[ext_resource type="Texture2D" uid="uid://jp1ghu46wla6" path="res://sprites/waterbottle.png" id="11_vhlys"]
+[ext_resource type="Texture2D" uid="uid://docxirts7v6cs" path="res://sprites/bomb.png" id="12_ce8oy"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_13okj"]
 vertices = PackedVector2Array(680, 359, 27, 362, 25, 0, 668, -5)
@@ -14,13 +18,29 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(18, 373, 15, -9, 678, -16, 691, 369)])
 source_geometry_group_name = &"navigation_polygon_source_group"
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("PlayerScene", "HealthFlask", "WaterFlask")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_adsfm"]
+resource_local_to_scene = true
+shader = ExtResource("9_30h0y")
+shader_parameter/red = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xnmcb"]
+resource_local_to_scene = true
+shader = ExtResource("9_30h0y")
+shader_parameter/red = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sn6yx"]
+resource_local_to_scene = true
+shader = ExtResource("9_30h0y")
+shader_parameter/red = 0.0
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("PlayerScene", "HealthFlask", "WaterFlask", "ConsumableIcons")]
 y_sort_enabled = true
 script = ExtResource("1_2ixbe")
 PlayerScene = NodePath("Player")
 HealthFlask = NodePath("Camera2D/CanvasLayer/HealthFlask")
 WaterFlask = NodePath("Camera2D/CanvasLayer/WaterFlask")
 BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2")])
+ConsumableIcons = [NodePath("Camera2D/CanvasLayer/Potion"), NodePath("Camera2D/CanvasLayer/WaterBottle"), NodePath("Camera2D/CanvasLayer/Bomb")]
 
 [node name="Player" parent="." instance=ExtResource("1_ayroo")]
 position = Vector2(292, 396)
@@ -42,3 +62,19 @@ position = Vector2(604, 284)
 [node name="HealthFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("7_54fwy")]
 z_index = -1
 position = Vector2(548, 286)
+
+[node name="Potion" parent="Camera2D/CanvasLayer" instance=ExtResource("8_boa0h")]
+material = SubResource("ShaderMaterial_adsfm")
+position = Vector2(24, 24)
+
+[node name="WaterBottle" parent="Camera2D/CanvasLayer" instance=ExtResource("8_boa0h")]
+material = SubResource("ShaderMaterial_xnmcb")
+position = Vector2(72, 24)
+texture = ExtResource("11_vhlys")
+type = 1
+
+[node name="Bomb" parent="Camera2D/CanvasLayer" instance=ExtResource("8_boa0h")]
+material = SubResource("ShaderMaterial_sn6yx")
+position = Vector2(120, 24)
+texture = ExtResource("12_ce8oy")
+type = 2

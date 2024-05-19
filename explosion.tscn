@@ -13,6 +13,7 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_am2fh"]
+resource_local_to_scene = true
 shader = ExtResource("1_ticvf")
 shader_parameter/radius = 0.0
 shader_parameter/border_width = 2.0

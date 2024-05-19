@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3 uid="uid://b72bxpyyuo8aw"]
+
+[ext_resource type="Texture2D" uid="uid://docxirts7v6cs" path="res://sprites/bomb.png" id="1_eubk8"]
+[ext_resource type="Script" path="res://BombProjectile.cs" id="1_vh705"]
+[ext_resource type="PackedScene" uid="uid://b0h4vxic4wuuc" path="res://explosion_projectile.tscn" id="3_prk1x"]
+
+[sub_resource type="Animation" id="Animation_47iyt"]
+resource_name = "spawn"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(2.07053, 8.57418),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(1, 1)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.9),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"OnExplode"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3xrhp"]
+_data = {
+"moving": SubResource("Animation_47iyt")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g326e"]
+radius = 16.0
+
+[node name="BombProjectile" type="Sprite2D"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_eubk8")
+script = ExtResource("1_vh705")
+fxScene = ExtResource("3_prk1x")
+Damage = 0
+Acceleration = 0.2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3xrhp")
+}
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_g326e")
+disabled = true

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0vbcweidurej"]
+
+[ext_resource type="Texture2D" uid="uid://bhqrwrohw12rp" path="res://sprites/wood_tile.png" id="1_cm0qr"]
+
+[node name="WoodTile" type="Sprite2D"]
+texture = ExtResource("1_cm0qr")
+offset = Vector2(0, -5)
