@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://clanubkel2wmg"]
+
+[ext_resource type="Texture2D" uid="uid://d1tjm7im3pu7w" path="res://sprites/potion.png" id="1_tedu8"]
+[ext_resource type="Script" path="res://ConsumablePickup.cs" id="2_kddmr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fs1sy"]
+radius = 16.0
+
+[node name="ConsumablePickup" type="Sprite2D"]
+texture = ExtResource("1_tedu8")
+script = ExtResource("2_kddmr")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_fs1sy")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

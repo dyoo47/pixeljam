@@ -6,6 +6,7 @@ public partial class BlockManager : Node2D
 {
 	private TileMap tileMap;
 	bool cleared = false;
+	bool entered = false;
 	int enemyCount;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -19,6 +20,10 @@ public partial class BlockManager : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		if(entered) 
+		{ 
+			GetNode<CollisionShape2D>("Area2D/CollisionShape2D").Disabled = true;
+		}
 	}
 
 	public void OnEnemyDeath()
@@ -37,6 +42,7 @@ public partial class BlockManager : Node2D
 	{
 		if (body.IsInGroup("player") && !cleared)
 		{
+			entered = true;
 			GetTree().CallGroup("wall_tile", WallTile.MethodName.OnPlayerEnter);
 			GetTree().CallGroup("spawner", Buoy.MethodName.OnPlayerEnter);
 		}

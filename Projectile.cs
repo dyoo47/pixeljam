@@ -43,6 +43,12 @@ public partial class Projectile : Sprite2D
 
 	public void OnProjectileHit(Node2D body)
 	{
+		if (body.IsInGroup("destructible"))
+		{
+			Destructible destructible = (Destructible) body;
+			destructible.OnDestroy();
+			QueueFree();
+		}
 		if (!body.IsInGroup(TargetGroup))
 		{
 			return;

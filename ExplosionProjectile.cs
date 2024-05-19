@@ -26,9 +26,9 @@ public partial class ExplosionProjectile : Node2D
 			Entity enemy = (Entity) body;
 			Vector2 pointing = (enemy.Position - Position).Normalized();
 			enemy.Hit(pointing * new Vector2(100, 100), 0.5f, 60);
+		}else if (body.IsInGroup("destructible"))
+		{
+			(body as Destructible).OnDestroy();
 		}
 	}
 }
-
-
-

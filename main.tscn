@@ -1,9 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=18 format=3 uid="uid://dwp30rssu7qp4"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
 [ext_resource type="PackedScene" uid="uid://ym1lowlk35io" path="res://blocks/block_big.tscn" id="3_upfys"]
+[ext_resource type="PackedScene" uid="uid://dnbjwa3m120to" path="res://blocks/block_walls.tscn" id="4_kgqio"]
 [ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://blocks/block_simple.tscn" id="5_13gs2"]
+[ext_resource type="PackedScene" uid="uid://n42abbqs4wqn" path="res://blocks/block_grassy_1.tscn" id="5_paxr6"]
 [ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
 [ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
 [ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
@@ -39,7 +41,7 @@ script = ExtResource("1_2ixbe")
 PlayerScene = NodePath("Player")
 HealthFlask = NodePath("Camera2D/CanvasLayer/HealthFlask")
 WaterFlask = NodePath("Camera2D/CanvasLayer/WaterFlask")
-BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2")])
+BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2"), ExtResource("4_kgqio"), ExtResource("5_paxr6")])
 ConsumableIcons = [NodePath("Camera2D/CanvasLayer/Potion"), NodePath("Camera2D/CanvasLayer/WaterBottle"), NodePath("Camera2D/CanvasLayer/Bomb")]
 
 [node name="Player" parent="." instance=ExtResource("1_ayroo")]
@@ -75,6 +77,6 @@ type = 1
 
 [node name="Bomb" parent="Camera2D/CanvasLayer" instance=ExtResource("8_boa0h")]
 material = SubResource("ShaderMaterial_sn6yx")
-position = Vector2(120, 24)
+position = Vector2(128, 24)
 texture = ExtResource("12_ce8oy")
 type = 2

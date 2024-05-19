@@ -1,0 +1,26 @@
+[gd_scene load_steps=8 format=3 uid="uid://gncqw6mel0s7"]
+
+[ext_resource type="Texture2D" uid="uid://b0afadio2t4qk" path="res://sprites/crate.png" id="1_3lvwk"]
+[ext_resource type="Script" path="res://Destructible.cs" id="1_buxyo"]
+[ext_resource type="PackedScene" uid="uid://dfcucxukdxkv6" path="res://plume.tscn" id="2_017gi"]
+[ext_resource type="PackedScene" uid="uid://clanubkel2wmg" path="res://consumable_pickup.tscn" id="3_4h8ok"]
+[ext_resource type="PackedScene" uid="uid://b8lihjeg4w5jd" path="res://bomb_pickup.tscn" id="4_xgcuf"]
+[ext_resource type="PackedScene" uid="uid://obw2opjm7d8v" path="res://water_pickup.tscn" id="5_oehc5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ktvv"]
+size = Vector2(32, 24)
+
+[node name="Crate" type="CharacterBody2D" groups=["destructible"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_buxyo")
+fxScene = ExtResource("2_017gi")
+drops = Array[PackedScene]([ExtResource("3_4h8ok"), ExtResource("4_xgcuf"), ExtResource("5_oehc5")])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_4ktvv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -13)
+texture = ExtResource("1_3lvwk")

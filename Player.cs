@@ -62,9 +62,9 @@ public partial class Player : CharacterBody2D
 	
 	public override void _Ready()
 	{
-		ConsumableCounts[0] = 4;
-		ConsumableCounts[1] = 60;
-		ConsumableCounts[2] = 60;
+		ConsumableCounts[0] = 0;
+		ConsumableCounts[1] = 0;
+		ConsumableCounts[2] = 0;
 		ConsumableCounts[3] = 0;
 		elapsedHitTime = hitTime;
 		ScreenSize = GetViewportRect().Size;
@@ -149,7 +149,7 @@ public partial class Player : CharacterBody2D
 		// Quintic
 		_weaponContainer.Rotation = (float)(1 - Math.Pow(x, 5)) * difference + _weaponContainer.Rotation;
 
-				switch(_weaponState)
+		switch(_weaponState)
 		{
 			case WeaponState.Equipping:
 				elapsedEquipTime += delta;
@@ -185,7 +185,7 @@ public partial class Player : CharacterBody2D
 					}
 					else
 					{
-						if(Water >= rangedWeapon.waterCost)
+						if(Water >= rangedWeapon.waterCost || ConsumableCounts[1] > 0)
 						{
 							Water -= rangedWeapon.waterCost;
 							rangedWeapon.Attack();
@@ -235,8 +235,8 @@ public partial class Player : CharacterBody2D
 			animatedSprite2D.Stop();
 		}
 
-		if (Input.IsActionJustPressed("use_1")) UseConsumable(0);
-		if (Input.IsActionJustPressed("use_2")) UseConsumable(1);
+		if (Input.IsActionJustPressed("use_1") || Health <= 0) UseConsumable(0);
+		if (Input.IsActionJustPressed("use_2") || Water <= 0) UseConsumable(1);
 		if (Input.IsActionJustPressed("use_3")) UseConsumable(2);
 
 		Velocity = dir;
@@ -256,13 +256,16 @@ public partial class Player : CharacterBody2D
 	
 	private void OnWeaponHit(Node2D body)
 	{
-		if(!body.IsInGroup("enemy"))
+		if(body.IsInGroup("enemy"))
 		{
-			return;
+			Entity enemy = (Entity) body;
+			Vector2 pointing = (enemy.Sprite.GlobalPosition - _sprite.GlobalPosition).Normalized();
+			enemy.Hit(pointing * 200.0f, 0.5f, 7);
+		}else if (body.IsInGroup("destructible"))
+		{
+			Destructible destructible = (Destructible) body;
+			destructible.OnDestroy();
 		}
-		Entity enemy = (Entity) body;
-		Vector2 pointing = (enemy.Sprite.GlobalPosition - _sprite.GlobalPosition).Normalized();
-		enemy.Hit(pointing * 200.0f, 0.5f, 7);
 	}
 
 	private void UseConsumable(int index)
@@ -280,6 +283,13 @@ public partial class Player : CharacterBody2D
 		}
 	}
 
+	public void GiveConsumable(int index)
+	{
+		ConsumableIcon icon = Game.MainNode.ConsumableIcons[index];
+		icon.Wiggle();
+		ConsumableCounts[index]++;
+	}
+
 	public void AddHealth(int health)
 	{
 		Health += health;
@@ -295,6 +305,16 @@ public partial class Player : CharacterBody2D
 		if(Water > MaxWater) { 
 			Water = MaxWater;
 		}
+	}
+
+	public void RestoreFullHealth()
+	{
+		Health = MaxHealth;
+	}
+
+	public void RestoreFullWater()
+	{
+		Water = MaxWater;
 	}
 
 

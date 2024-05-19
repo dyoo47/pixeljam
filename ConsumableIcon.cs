@@ -49,10 +49,10 @@ public partial class ConsumableIcon : Sprite2D
 		switch (type)
 		{
 			case ConsumableType.Potion:
-				Game.MainPlayer.AddHealth(20);
+				Game.MainPlayer.RestoreFullHealth();
 				break;
 			case ConsumableType.WaterBottle:
-				Game.MainPlayer.AddWater(20);
+				Game.MainPlayer.RestoreFullWater();
 				break;
 			case ConsumableType.Bomb:
 				Game.MainPlayer.ThrowBomb();
