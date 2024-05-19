@@ -27,7 +27,7 @@ void fragment() {
 				COLOR.rgb = water_color + vec3(0.1f);
 				//COLOR.rgb += texture(water_height, newUV).r / 3.0f;
 			}
-			COLOR.a = texture(water_height, newUV).r / 3.0f + 0.4f;
+			COLOR.a = texture(water_height, newUV).r / 2.0f + 0.4f;
 		}else{
 			COLOR.a = 0.0f;
 		}

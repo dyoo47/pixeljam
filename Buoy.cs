@@ -9,9 +9,13 @@ public partial class Buoy : Node2D
 	private bool _started = false;
 	private bool _ended = false;
 	private AnimationPlayer _player;
+	private BlockManager block;
 
 	public override void _Ready()
 	{
+		block = Game.GetBlock(GlobalPosition);
+		block.enemyCount++;
+		block.Buoys.Add(this);
 		_player = GetNode<AnimationPlayer>("AnimationPlayer");
 	}
 
@@ -45,7 +49,8 @@ public partial class Buoy : Node2D
 
 	public void OnEnemySpawn()
 	{
-		Node2D instance = enemyScene.Instantiate<Node2D>();
+		Entity instance = enemyScene.Instantiate<Entity>();
+		instance.blockOwner = block;
 		instance.Position = GlobalPosition;
 		Game.MainNode.AddChild(instance);
 	}

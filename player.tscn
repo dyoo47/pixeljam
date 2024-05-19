@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cykbmtoq4jr85"]
+[gd_scene load_steps=25 format=3 uid="uid://cykbmtoq4jr85"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_stjst"]
 [ext_resource type="PackedScene" uid="uid://bhn67vn6dqhwv" path="res://slash.tscn" id="2_4dqpq"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://cqofo4v5fwnf1" path="res://noodle.tscn" id="5_nv1pj"]
 [ext_resource type="PackedScene" uid="uid://dqk5pixyg366e" path="res://watergun.tscn" id="6_l87x2"]
 [ext_resource type="Texture2D" uid="uid://c7vbhgl26r7sc" path="res://sprites/refillParticle.png" id="9_j0ebj"]
+[ext_resource type="Texture2D" uid="uid://bgic10wa6tx7i" path="res://sprites/xpParticle.png" id="11_y8vo7"]
+[ext_resource type="Texture2D" uid="uid://hpb5nnoypntn" path="res://sprites/healthParticle.png" id="12_ml7uh"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gvefk"]
 radius = 6.0
@@ -78,7 +80,7 @@ size = Vector2(48, 20)
 _data = [Vector2(0, 0.293848), 0.0, 0.0, 0, 0, Vector2(0.588235, 0.982984), 0.0, 0.0, 0, 0, Vector2(0.993464, 0.617147), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("hitCollision", "hitArea", "refillArea", "meleeWeapon", "rangedWeapon", "particles", "refillParticles") groups=["player"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("hitCollision", "hitArea", "refillArea", "meleeWeapon", "rangedWeapon", "particles", "refillParticles", "xpParticles", "healthParticles") groups=["player"]]
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_stjst")
@@ -91,6 +93,8 @@ slashEffectScene = ExtResource("2_4dqpq")
 particles = NodePath("Heading/SlashSpawnPoint/CPUParticles2D")
 damageIndicatorScene = ExtResource("3_4fipu")
 refillParticles = NodePath("RefillParticles")
+xpParticles = NodePath("XpParticles")
+healthParticles = NodePath("HealthParticles")
 BombScene = ExtResource("4_2ionv")
 Speed = 150
 
@@ -173,6 +177,40 @@ emitting = false
 amount = 6
 lifetime = 0.6
 texture = ExtResource("9_j0ebj")
+emission_shape = 1
+emission_sphere_radius = 14.35
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 40)
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+scale_amount_curve = SubResource("Curve_qwtgs")
+
+[node name="XpParticles" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_11rad")
+position = Vector2(0, -12)
+emitting = false
+amount = 6
+lifetime = 0.6
+one_shot = true
+texture = ExtResource("11_y8vo7")
+emission_shape = 1
+emission_sphere_radius = 14.35
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 40)
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+scale_amount_curve = SubResource("Curve_qwtgs")
+
+[node name="HealthParticles" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_11rad")
+position = Vector2(0, -24)
+emitting = false
+amount = 6
+lifetime = 0.6
+one_shot = true
+texture = ExtResource("12_ml7uh")
 emission_shape = 1
 emission_sphere_radius = 14.35
 direction = Vector2(0, -1)

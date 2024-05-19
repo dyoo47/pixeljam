@@ -13,6 +13,8 @@ public partial class Player : CharacterBody2D
 	[Export] public CpuParticles2D particles;
 	[Export] public PackedScene damageIndicatorScene;
 	[Export] public CpuParticles2D refillParticles;
+	[Export] public CpuParticles2D xpParticles;
+	[Export] public CpuParticles2D healthParticles;
 	[Export] public PackedScene BombScene;
 	[Export] public int Speed { get; set; } = 200;
 
@@ -20,6 +22,12 @@ public partial class Player : CharacterBody2D
 	public int Health = 50;
 	public float MaxWater = 50;
 	public float Water = 50;
+	public float MaxXp = 50;
+	public float Xp = 0;
+	public int XpStatLinear = 2;
+	public float XpLimitMult = 1.1f;
+	public int Level = 1;
+	public int Attack = 7;
 
 	public int[] ConsumableCounts = new int[10];
 
@@ -241,6 +249,31 @@ public partial class Player : CharacterBody2D
 
 		Velocity = dir;
 		MoveAndSlide();
+
+		if(Xp > MaxXp)
+		{
+			var diff = MaxXp - Xp;
+			Xp = diff;
+			MaxXp = (int)Math.Round(MaxXp * XpLimitMult);
+			Level++;
+			Attack += XpStatLinear;
+			MaxHealth += XpStatLinear * 2;
+			Health = MaxHealth;
+			MaxWater += XpStatLinear * 2;
+			Water = MaxWater;
+			Game.MainNode.PlayLevelAnim();
+			xpParticles.Restart();
+			SpawnIndicator("Level up!");
+		}
+	}
+
+	public void SpawnIndicator(String text)
+	{
+		DamageIndicator damageIndicator = damageIndicatorScene.Instantiate<DamageIndicator>();
+		damageIndicator.StartPosition = Position;
+		damageIndicator.Text = text;
+		GetTree().Root.AddChild(damageIndicator);
+
 	}
 
 	public void Hit(int damage)
@@ -260,7 +293,7 @@ public partial class Player : CharacterBody2D
 		{
 			Entity enemy = (Entity) body;
 			Vector2 pointing = (enemy.Sprite.GlobalPosition - _sprite.GlobalPosition).Normalized();
-			enemy.Hit(pointing * 200.0f, 0.5f, 7);
+			enemy.Hit(pointing * 200.0f, 0.5f, Attack);
 		}else if (body.IsInGroup("destructible"))
 		{
 			Destructible destructible = (Destructible) body;
@@ -307,13 +340,22 @@ public partial class Player : CharacterBody2D
 		}
 	}
 
+	public void AddXp(int xp)
+	{
+		Xp += xp;
+		
+	}
+
 	public void RestoreFullHealth()
 	{
+		SpawnIndicator("Full heal!");
+		healthParticles.Restart();
 		Health = MaxHealth;
 	}
 
 	public void RestoreFullWater()
 	{
+		SpawnIndicator("Max refill!");
 		Water = MaxWater;
 	}
 

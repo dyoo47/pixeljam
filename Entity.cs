@@ -25,6 +25,8 @@ public partial class Entity : CharacterBody2D
 	private CpuParticles2D _DeathParticles;
 	private CpuParticles2D _HitParticles;
 
+	public BlockManager blockOwner;
+
 	[Export] public int Health = 21;
 
 	protected enum EntityState
@@ -122,10 +124,12 @@ public partial class Entity : CharacterBody2D
 	{
 		if(Sprite.Animation == "death")
 		{
-			(GetTree().GetFirstNodeInGroup("block_manager") as BlockManager).OnEnemyDeath();
+			//(GetTree().GetFirstNodeInGroup("block_manager") as BlockManager).OnEnemyDeath();
+			blockOwner.OnEnemyDeath();
 			State = EntityState.Dead;
 			Sprite.Visible = false;
 			_DeathParticles.Restart();
+			Game.MainPlayer.AddXp(10);
 		}else if(Sprite.Animation == "attack")
 		{
 			State = EntityState.Idle;

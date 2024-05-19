@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=29 format=3 uid="uid://dwp30rssu7qp4"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dnbjwa3m120to" path="res://blocks/block_walls.tscn" id="4_kgqio"]
 [ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://blocks/block_simple.tscn" id="5_13gs2"]
 [ext_resource type="PackedScene" uid="uid://n42abbqs4wqn" path="res://blocks/block_grassy_1.tscn" id="5_paxr6"]
+[ext_resource type="PackedScene" uid="uid://bh3gcm3x00puj" path="res://blocks/blocker.tscn" id="6_8dwt8"]
 [ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
 [ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
 [ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
@@ -13,6 +14,10 @@
 [ext_resource type="Shader" path="res://redshift.gdshader" id="9_30h0y"]
 [ext_resource type="Texture2D" uid="uid://jp1ghu46wla6" path="res://sprites/waterbottle.png" id="11_vhlys"]
 [ext_resource type="Texture2D" uid="uid://docxirts7v6cs" path="res://sprites/bomb.png" id="12_ce8oy"]
+[ext_resource type="Shader" path="res://damage_indicator.gdshader" id="14_moa6p"]
+[ext_resource type="FontFile" uid="uid://c3hqdjttqiakb" path="res://external/Fibberish v1.0/fibberish.ttf" id="15_hykse"]
+[ext_resource type="Shader" path="res://flask.gdshader" id="16_5rqy1"]
+[ext_resource type="Texture2D" uid="uid://dxmrb6lmgkurh" path="res://sprites/xpflask.png" id="17_0ggw1"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_13okj"]
 vertices = PackedVector2Array(680, 359, 27, 362, 25, 0, 668, -5)
@@ -35,14 +40,62 @@ resource_local_to_scene = true
 shader = ExtResource("9_30h0y")
 shader_parameter/red = 0.0
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("PlayerScene", "HealthFlask", "WaterFlask", "ConsumableIcons")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tn4kn"]
+shader = ExtResource("14_moa6p")
+shader_parameter/borderColor = Vector3(0, 0, 0)
+shader_parameter/startColor = Vector3(1, 1, 1)
+shader_parameter/endColor = Vector3(0.2, 0, 0)
+shader_parameter/tint = 0.0
+
+[sub_resource type="Animation" id="Animation_q2xbu"]
+resource_name = "wiggle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.5, 1.5), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_iawuw"]
+_data = {
+"wiggle": SubResource("Animation_q2xbu")
+}
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1xpnt"]
+noise_type = 2
+frequency = 0.003
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gmbgl"]
+noise = SubResource("FastNoiseLite_1xpnt")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q4nkl"]
+shader = ExtResource("16_5rqy1")
+shader_parameter/water_color = Vector3(0.6, 0.898, 0)
+shader_parameter/px_height = 115.0
+shader_parameter/border_height = 4.0
+shader_parameter/height_coef = 10.0
+shader_parameter/water_height = SubResource("NoiseTexture2D_gmbgl")
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("PlayerScene", "HealthFlask", "WaterFlask", "XpFlask", "ConsumableIcons", "LevelLabel", "HealthLabel", "WaterLabel")]
 y_sort_enabled = true
 script = ExtResource("1_2ixbe")
 PlayerScene = NodePath("Player")
 HealthFlask = NodePath("Camera2D/CanvasLayer/HealthFlask")
 WaterFlask = NodePath("Camera2D/CanvasLayer/WaterFlask")
+XpFlask = NodePath("Camera2D/CanvasLayer/XPFlask")
 BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2"), ExtResource("4_kgqio"), ExtResource("5_paxr6")])
 ConsumableIcons = [NodePath("Camera2D/CanvasLayer/Potion"), NodePath("Camera2D/CanvasLayer/WaterBottle"), NodePath("Camera2D/CanvasLayer/Bomb")]
+LevelLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel")
+HealthLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel2")
+WaterLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel3")
+blocker = ExtResource("6_8dwt8")
 
 [node name="Player" parent="." instance=ExtResource("1_ayroo")]
 position = Vector2(292, 396)
@@ -59,11 +112,11 @@ script = ExtResource("6_ayan2")
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
 
 [node name="WaterFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("6_q83x5")]
-position = Vector2(604, 284)
+position = Vector2(608, 280)
 
 [node name="HealthFlask" parent="Camera2D/CanvasLayer" instance=ExtResource("7_54fwy")]
 z_index = -1
-position = Vector2(548, 286)
+position = Vector2(544, 280)
 
 [node name="Potion" parent="Camera2D/CanvasLayer" instance=ExtResource("8_boa0h")]
 material = SubResource("ShaderMaterial_adsfm")
@@ -80,3 +133,53 @@ material = SubResource("ShaderMaterial_sn6yx")
 position = Vector2(128, 24)
 texture = ExtResource("12_ce8oy")
 type = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Camera2D/CanvasLayer"]
+material = SubResource("ShaderMaterial_tn4kn")
+offset_left = 504.0
+offset_top = 8.0
+offset_right = 624.0
+offset_bottom = 24.0
+theme_override_fonts/normal_font = ExtResource("15_hykse")
+text = "Lv.1
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Camera2D/CanvasLayer/RichTextLabel"]
+libraries = {
+"": SubResource("AnimationLibrary_iawuw")
+}
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Camera2D/CanvasLayer"]
+material = SubResource("ShaderMaterial_tn4kn")
+anchors_preset = -1
+anchor_top = -0.0666667
+anchor_bottom = -0.0666667
+offset_left = 504.0
+offset_top = 320.0
+offset_right = 584.0
+offset_bottom = 368.0
+theme_override_fonts/normal_font = ExtResource("15_hykse")
+bbcode_enabled = true
+text = "[center]50/50[/center]"
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="Camera2D/CanvasLayer"]
+material = SubResource("ShaderMaterial_tn4kn")
+anchors_preset = -1
+anchor_top = -0.0666667
+anchor_bottom = -0.0666667
+offset_left = 564.0
+offset_top = 320.0
+offset_right = 644.0
+offset_bottom = 368.0
+theme_override_fonts/normal_font = ExtResource("15_hykse")
+bbcode_enabled = true
+text = "[center]50/50[/center]"
+metadata/_edit_use_anchors_ = true
+
+[node name="XPFlask" type="Sprite2D" parent="Camera2D/CanvasLayer"]
+material = SubResource("ShaderMaterial_q4nkl")
+position = Vector2(568, 32)
+rotation = 1.5708
+texture = ExtResource("17_0ggw1")

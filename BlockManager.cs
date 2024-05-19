@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class BlockManager : Node2D
@@ -7,13 +8,14 @@ public partial class BlockManager : Node2D
 	private TileMap tileMap;
 	bool cleared = false;
 	bool entered = false;
-	int enemyCount;
+	public int enemyCount;
+	public List<Buoy> Buoys = new List<Buoy>();
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		AddToGroup("block_manager");
 		tileMap = GetNode<TileMap>("TileMap");
-		enemyCount = GetTree().GetNodesInGroup("spawner").Count;
+		//enemyCount = GetTree().GetNodesInGroup("spawner").Count;
 		GD.Print(enemyCount);
 	}
 
@@ -44,8 +46,13 @@ public partial class BlockManager : Node2D
 		{
 			entered = true;
 			GetTree().CallGroup("wall_tile", WallTile.MethodName.OnPlayerEnter);
-			GetTree().CallGroup("spawner", Buoy.MethodName.OnPlayerEnter);
+			//GetTree().CallGroup("spawner", Buoy.MethodName.OnPlayerEnter);
+			foreach(Buoy buoy in Buoys)
+			{
+				buoy.OnPlayerEnter();
+			}
 		}
 	}
 
 }
+
