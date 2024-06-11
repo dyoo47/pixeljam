@@ -44,6 +44,7 @@ public partial class Buoy : Node2D
 
 	public void OnSummon()
 	{
+		GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D").Play();
 		_player.Play("spawn");
 	}
 

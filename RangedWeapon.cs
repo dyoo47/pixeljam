@@ -23,6 +23,7 @@ public partial class RangedWeapon : Weapon
 
 	public override void Attack()
 	{
+		Game.PlaySound("res://sound/watergun_shoot.wav");
 		Projectile projInstance = ProjectileScene.Instantiate<Projectile>();
 		projInstance.Position = _ProjectileSpawnPoint.GlobalPosition;
 		projInstance.Rotation = Rotation;

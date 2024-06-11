@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bklbcctu4qgxs"]
+[gd_scene load_steps=15 format=3 uid="uid://bklbcctu4qgxs"]
 
 [ext_resource type="Texture2D" uid="uid://comc6skwh2sni" path="res://sprites/buoy.png" id="1_j36df"]
 [ext_resource type="Script" path="res://Buoy.cs" id="2_7d6tq"]
 [ext_resource type="Texture2D" uid="uid://8pf4x48qaof1" path="res://sprites/dustMote.png" id="2_l0kyp"]
 [ext_resource type="PackedScene" uid="uid://bmqvccjqiyx5a" path="res://beach_ball_enemy.tscn" id="2_lc04r"]
 [ext_resource type="Curve" uid="uid://db2m7cwtuof80" path="res://misc/mote_curve.tres" id="3_rvnjv"]
+[ext_resource type="AudioStream" uid="uid://cgfwhvrvnfk0k" path="res://sound/buoy_spawn.wav" id="6_t4kv6"]
 
 [sub_resource type="Animation" id="Animation_7h8gm"]
 resource_name = "spawn"
@@ -203,6 +204,9 @@ anim_offset_max = 1.0
 sprite_frames = SubResource("SpriteFrames_4yp30")
 autoplay = "default"
 frame_progress = 0.777826
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_t4kv6")
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="finished" from="Secondary" to="." method="_on_secondary_finished"]

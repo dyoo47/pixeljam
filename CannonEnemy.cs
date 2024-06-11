@@ -41,6 +41,7 @@ public partial class CannonEnemy : Entity
 
 				if(elapsedAimTime >= aimTime)
 				{
+					Game.PlaySound("res://sound/cannon_shoot.wav");
 					State = EntityState.Attacking;
 					Projectile projInstance = projectileScene.Instantiate<Projectile>();
 					projInstance.Position = projectileSpawn.GlobalPosition;
@@ -60,5 +61,13 @@ public partial class CannonEnemy : Entity
 				break;
 		}
 	}
+
+	public override void Hit(Vector2 vel, float stunTime, int damage)
+	{
+		base.Hit(vel, stunTime, damage);
+		Game.PlaySound("res://sound/cannon_hit.wav");
+	}
+
+
 
 }

@@ -42,7 +42,6 @@ _data = {
 radius = 16.0
 
 [node name="BombProjectile" type="Sprite2D"]
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_eubk8")
 script = ExtResource("1_vh705")
 fxScene = ExtResource("3_prk1x")

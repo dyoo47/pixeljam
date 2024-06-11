@@ -14,23 +14,14 @@ size = Vector2(528, 272)
 y_sort_enabled = true
 script = ExtResource("1_xjrro")
 
-[node name="Crate" parent="." instance=ExtResource("2_0pkwx")]
-position = Vector2(256, 352)
-
-[node name="Crate2" parent="." instance=ExtResource("2_0pkwx")]
-position = Vector2(232, 344)
-
 [node name="Crate3" parent="." instance=ExtResource("2_0pkwx")]
-position = Vector2(256, 328)
+position = Vector2(184, 336)
 
 [node name="Crate4" parent="." instance=ExtResource("2_0pkwx")]
 position = Vector2(384, 176)
 
-[node name="Crate5" parent="." instance=ExtResource("2_0pkwx")]
-position = Vector2(416, 184)
-
 [node name="Crate6" parent="." instance=ExtResource("2_0pkwx")]
-position = Vector2(448, 176)
+position = Vector2(424, 176)
 
 [node name="Area2D" type="Area2D" parent="."]
 visible = false

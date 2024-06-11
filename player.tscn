@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cykbmtoq4jr85"]
+[gd_scene load_steps=26 format=3 uid="uid://cykbmtoq4jr85"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_stjst"]
 [ext_resource type="PackedScene" uid="uid://bhn67vn6dqhwv" path="res://slash.tscn" id="2_4dqpq"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://c7vbhgl26r7sc" path="res://sprites/refillParticle.png" id="9_j0ebj"]
 [ext_resource type="Texture2D" uid="uid://bgic10wa6tx7i" path="res://sprites/xpParticle.png" id="11_y8vo7"]
 [ext_resource type="Texture2D" uid="uid://hpb5nnoypntn" path="res://sprites/healthParticle.png" id="12_ml7uh"]
+[ext_resource type="AudioStream" uid="uid://kfajoecu3u8m" path="res://sound/refill.wav" id="13_s2ikn"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gvefk"]
 radius = 6.0
@@ -72,7 +73,7 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.197802), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tbwqo"]
-size = Vector2(48, 20)
+size = Vector2(58, 20)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_11rad"]
 
@@ -154,7 +155,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Heading/Area2D"]
-position = Vector2(24, 0)
+position = Vector2(29, 0)
 shape = SubResource("RectangleShape2D_tbwqo")
 disabled = true
 
@@ -219,6 +220,11 @@ gravity = Vector2(0, 40)
 initial_velocity_min = 50.0
 initial_velocity_max = 50.0
 scale_amount_curve = SubResource("Curve_qwtgs")
+
+[node name="AudioContainer" type="Node2D" parent="."]
+
+[node name="RefillAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_s2ikn")
 
 [connection signal="area_entered" from="RefillArea" to="." method="OnRefillAreaEnter"]
 [connection signal="area_exited" from="RefillArea" to="." method="OnRefillAreaLeave"]

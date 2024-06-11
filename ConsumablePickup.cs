@@ -32,6 +32,7 @@ public partial class ConsumablePickup : Sprite2D
 	{
 		if (body.IsInGroup("player") && !pickedUp)
 		{
+			Game.PlaySound("res://sound/consumable_pickup.wav");
 			pickedUp = true;
 			Game.MainPlayer.GiveConsumable(consumableIndex);
 		}

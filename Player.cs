@@ -18,8 +18,8 @@ public partial class Player : CharacterBody2D
 	[Export] public PackedScene BombScene;
 	[Export] public int Speed { get; set; } = 200;
 
-	public int MaxHealth = 50;
-	public int Health = 50;
+	public int MaxHealth = 20;
+	public int Health = 20;
 	public float MaxWater = 50;
 	public float Water = 50;
 	public float MaxXp = 50;
@@ -52,13 +52,17 @@ public partial class Player : CharacterBody2D
 	private Timer _timer;
 	private Timer _attackTimer;
 	private bool _left = true;
-	private float _attackCooldown = 0.3f;
-	private float _attackActiveLength = 0.2f;
+	private float _attackCooldown = 0.5f;
+	private float _attackActiveLength = 0.5f;
+	private float _minAttackSpeed = 0.1f;
 	private bool _usingMelee = true;
 
 	private WeaponState _weaponState = WeaponState.Equipping;
 	private double equipTime = 0.5;
 	private double elapsedEquipTime = 0;
+
+	private AudioStreamPlayer2D refillSound;
+	private bool dead = false;
 
 	enum WeaponState
 	{
@@ -70,6 +74,7 @@ public partial class Player : CharacterBody2D
 	
 	public override void _Ready()
 	{
+		refillSound = GetNode<AudioStreamPlayer2D>("RefillAudio");
 		ConsumableCounts[0] = 0;
 		ConsumableCounts[1] = 0;
 		ConsumableCounts[2] = 0;
@@ -89,9 +94,11 @@ public partial class Player : CharacterBody2D
 
 	public override void _Process(double delta)
 	{
+		if (dead) return;
+		_attackTimer.WaitTime = _attackActiveLength;
 		_refilling = false;
 		foreach(Area2D area in refillArea.GetOverlappingAreas()){
-			if (area.IsInGroup("refill"))
+			if (area.IsInGroup("refill") && Water < MaxWater)
 			{
 				_refilling = true;
 				break;
@@ -100,6 +107,7 @@ public partial class Player : CharacterBody2D
 		refillParticles.Emitting = _refilling;
 		if (_refilling)
 		{
+			if(!refillSound.Playing) refillSound.Play();
 			Water += refillRate * (float) delta;
 			if(Water > MaxWater) Water = MaxWater;
 		}
@@ -173,14 +181,16 @@ public partial class Player : CharacterBody2D
 			case WeaponState.Ready:
 				if(Input.IsActionJustPressed("swap_weapon"))
 				{
+					Game.PlaySound("res://sound/swap_weapon.wav");
 					_weaponState = WeaponState.Equipping;
 					elapsedEquipTime = 0;
 					_usingMelee = !_usingMelee;
 				}
-				if (Input.IsActionJustPressed("attack"))
+				if (Input.IsActionPressed("attack") && _attackTimer.TimeLeft <= 0 && _usingMelee)
 				{
 					if (_usingMelee)
 					{
+						Game.PlaySound("res://sound/hit.wav");
 						Node2D instance = (Node2D)slashEffectScene.Instantiate();
 						GetTree().Root.AddChild(instance);
 						instance.Position = _slashSpawnPoint.GlobalPosition;
@@ -191,13 +201,14 @@ public partial class Player : CharacterBody2D
 						_attackTimer.Start();
 						hitCollision.Disabled = false;
 					}
-					else
+				}
+				if (Input.IsActionJustPressed("attack") && !_usingMelee)
+				{
+
+					if(Water >= rangedWeapon.waterCost || ConsumableCounts[1] > 0)
 					{
-						if(Water >= rangedWeapon.waterCost || ConsumableCounts[1] > 0)
-						{
-							Water -= rangedWeapon.waterCost;
-							rangedWeapon.Attack();
-						}
+						Water -= rangedWeapon.waterCost;
+						rangedWeapon.Attack();
 					}
 				}
 				break;
@@ -205,7 +216,7 @@ public partial class Player : CharacterBody2D
 
 
 				
-		if(_attackTimer.TimeLeft <= 0)
+		if(_attackTimer.TimeLeft <= 0.05f)
 		{
 			hitCollision.Disabled = true;
 		}
@@ -255,6 +266,8 @@ public partial class Player : CharacterBody2D
 			var diff = MaxXp - Xp;
 			Xp = diff;
 			MaxXp = (int)Math.Round(MaxXp * XpLimitMult);
+			_attackActiveLength -= 0.03f;
+			if(_attackActiveLength < _minAttackSpeed) _attackActiveLength = _minAttackSpeed;
 			Level++;
 			Attack += XpStatLinear;
 			MaxHealth += XpStatLinear * 2;
@@ -264,6 +277,23 @@ public partial class Player : CharacterBody2D
 			Game.MainNode.PlayLevelAnim();
 			xpParticles.Restart();
 			SpawnIndicator("Level up!");
+			Game.PlaySound("res://sound/levelup.wav");
+			if(Level == 5)
+			{
+				Game.AddHardLevels();
+			}
+		}
+
+		if(Health <= 0)
+		{
+			Visible = false;
+			hitCollision.Disabled = true;
+			dead = true;
+			Game.Death();
+			foreach(Node node in Game.MainNode.GetChildren()){
+				if (node.IsInGroup("no_pause")) continue;
+				node.SetProcess(false);
+			}
 		}
 	}
 
@@ -278,6 +308,7 @@ public partial class Player : CharacterBody2D
 
 	public void Hit(int damage)
 	{
+		Game.PlaySound("res://sound/player_hit.wav");
 		DamageIndicator damageIndicator = damageIndicatorScene.Instantiate<DamageIndicator>();
 		damageIndicator.StartPosition = Position;
 		damageIndicator.Text = damage.ToString();

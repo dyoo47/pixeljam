@@ -49,6 +49,7 @@ public partial class ConsumableIcon : Sprite2D
 		switch (type)
 		{
 			case ConsumableType.Potion:
+				Game.PlaySound("res://sound/health.wav");
 				Game.MainPlayer.RestoreFullHealth();
 				break;
 			case ConsumableType.WaterBottle:

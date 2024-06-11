@@ -86,6 +86,7 @@ public partial class Entity : CharacterBody2D
 				}
 				if (Health <= 0)
 				{
+					Game.PlaySound("res://sound/entity_death.wav");
 					State = EntityState.Dying;
 					GetNode<CollisionShape2D>("CollisionShape2D").Disabled = true;
 				}
@@ -124,6 +125,7 @@ public partial class Entity : CharacterBody2D
 	{
 		if(Sprite.Animation == "death")
 		{
+			Game.MonstersSlain++;
 			//(GetTree().GetFirstNodeInGroup("block_manager") as BlockManager).OnEnemyDeath();
 			blockOwner.OnEnemyDeath();
 			State = EntityState.Dead;
@@ -136,9 +138,10 @@ public partial class Entity : CharacterBody2D
 		}
 	}
 
-	public void Hit(Vector2 vel, float stunTime, int damage)
+	public virtual void Hit(Vector2 vel, float stunTime, int damage)
 	{
 		if (State == EntityState.Dying || State == EntityState.Dead) return;
+		Game.PlaySound("res://sound/entity_hit.wav");
 		Health -= damage;
 		Knockback(vel);
 		_RedShift = 1.0f;

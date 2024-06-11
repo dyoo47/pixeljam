@@ -34,8 +34,10 @@ public partial class BlockManager : Node2D
 		enemyCount--;
 		if(enemyCount <= 0)
 		{
+			Game.ScreensCleared++;
 			RemoveFromGroup("block_manager");
 			GetTree().CallGroup("wall_tile", WallTile.MethodName.OnBlockCleared);
+			Game.PlaySound("res://sound/walltile_close.wav");
 			cleared = true;
 		}
 	}
@@ -44,6 +46,7 @@ public partial class BlockManager : Node2D
 	{
 		if (body.IsInGroup("player") && !cleared)
 		{
+			Game.PlaySound("res://sound/walltile_close.wav");
 			entered = true;
 			GetTree().CallGroup("wall_tile", WallTile.MethodName.OnPlayerEnter);
 			//GetTree().CallGroup("spawner", Buoy.MethodName.OnPlayerEnter);

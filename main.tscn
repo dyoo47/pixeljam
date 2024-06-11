@@ -1,16 +1,21 @@
-[gd_scene load_steps=29 format=3 uid="uid://dwp30rssu7qp4"]
+[gd_scene load_steps=34 format=3 uid="uid://dwp30rssu7qp4"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_2ixbe"]
 [ext_resource type="PackedScene" uid="uid://cykbmtoq4jr85" path="res://player.tscn" id="1_ayroo"]
 [ext_resource type="PackedScene" uid="uid://ym1lowlk35io" path="res://blocks/block_big.tscn" id="3_upfys"]
+[ext_resource type="PackedScene" uid="uid://mi7gaavnvkl8" path="res://blocks/block_grassy_3.tscn" id="4_12jyo"]
 [ext_resource type="PackedScene" uid="uid://dnbjwa3m120to" path="res://blocks/block_walls.tscn" id="4_kgqio"]
 [ext_resource type="PackedScene" uid="uid://dg21nlttsni1a" path="res://blocks/block_simple.tscn" id="5_13gs2"]
+[ext_resource type="PackedScene" uid="uid://cykycdxqchd3l" path="res://blocks/block_grassy_4.tscn" id="5_a75e0"]
 [ext_resource type="PackedScene" uid="uid://n42abbqs4wqn" path="res://blocks/block_grassy_1.tscn" id="5_paxr6"]
 [ext_resource type="PackedScene" uid="uid://bh3gcm3x00puj" path="res://blocks/blocker.tscn" id="6_8dwt8"]
+[ext_resource type="PackedScene" uid="uid://dlgondrtl0k4y" path="res://blocks/block_grassy_2.tscn" id="6_5265f"]
 [ext_resource type="Script" path="res://Camera.cs" id="6_ayan2"]
 [ext_resource type="PackedScene" uid="uid://dqoentn47pirx" path="res://water_flask.tscn" id="6_q83x5"]
+[ext_resource type="PackedScene" uid="uid://dpnrumbsuk76r" path="res://death_screen.tscn" id="7_0xehq"]
 [ext_resource type="PackedScene" uid="uid://ju46tbyq1yj5" path="res://health_flask.tscn" id="7_54fwy"]
 [ext_resource type="PackedScene" uid="uid://cr1i16ryf8scp" path="res://consumable_icon.tscn" id="8_boa0h"]
+[ext_resource type="PackedScene" uid="uid://bmsbr1dsq70bq" path="res://blocks/block_sandy_1.tscn" id="9_7l2ao"]
 [ext_resource type="Shader" path="res://redshift.gdshader" id="9_30h0y"]
 [ext_resource type="Texture2D" uid="uid://jp1ghu46wla6" path="res://sprites/waterbottle.png" id="11_vhlys"]
 [ext_resource type="Texture2D" uid="uid://docxirts7v6cs" path="res://sprites/bomb.png" id="12_ce8oy"]
@@ -90,14 +95,16 @@ PlayerScene = NodePath("Player")
 HealthFlask = NodePath("Camera2D/CanvasLayer/HealthFlask")
 WaterFlask = NodePath("Camera2D/CanvasLayer/WaterFlask")
 XpFlask = NodePath("Camera2D/CanvasLayer/XPFlask")
-BlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2"), ExtResource("4_kgqio"), ExtResource("5_paxr6")])
+BlockScenes = Array[PackedScene]([ExtResource("5_paxr6"), ExtResource("6_5265f"), ExtResource("4_12jyo"), ExtResource("5_a75e0")])
+HardBlockScenes = Array[PackedScene]([ExtResource("3_upfys"), ExtResource("5_13gs2"), ExtResource("4_kgqio"), ExtResource("9_7l2ao")])
 ConsumableIcons = [NodePath("Camera2D/CanvasLayer/Potion"), NodePath("Camera2D/CanvasLayer/WaterBottle"), NodePath("Camera2D/CanvasLayer/Bomb")]
 LevelLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel")
 HealthLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel2")
 WaterLabel = NodePath("Camera2D/CanvasLayer/RichTextLabel3")
 blocker = ExtResource("6_8dwt8")
+DeathScene = ExtResource("7_0xehq")
 
-[node name="Player" parent="." instance=ExtResource("1_ayroo")]
+[node name="Player" parent="." groups=["no_pause"] instance=ExtResource("1_ayroo")]
 position = Vector2(292, 396)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
@@ -105,7 +112,7 @@ visible = false
 position = Vector2(-25, 2)
 navigation_polygon = SubResource("NavigationPolygon_13okj")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." groups=["no_pause"]]
 position = Vector2(317, 175)
 script = ExtResource("6_ayan2")
 

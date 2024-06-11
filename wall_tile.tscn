@@ -101,6 +101,8 @@ size = Vector2(16, 16)
 position = Vector2(0, -5)
 sprite_frames = SubResource("SpriteFrames_bub22")
 animation = &"rise"
+frame = 4
+frame_progress = 1.0
 script = ExtResource("2_pe53o")
 
 [node name="Particles" type="CPUParticles2D" parent="."]

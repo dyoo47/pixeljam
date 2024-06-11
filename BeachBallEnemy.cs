@@ -90,6 +90,11 @@ public partial class BeachBallEnemy : Entity
 		}
 	}
 
+	public override void Hit(Vector2 vel, float stunTime, int damage)
+	{
+		base.Hit(vel, stunTime, damage);
+		Game.PlaySound("res://sound/beachball_hit.wav");
+	}
 
 
 	public override void _PhysicsProcess(double delta)
